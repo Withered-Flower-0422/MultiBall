@@ -11,5 +11,22 @@ MultiBall patch for Ballex².
 ## Usage
 
 1. Put the whole `Assets` folder in `%USERPROFILE%\AppData\LocalLow\Mushreb\BME Pro HDRP`.
+2. Drag the `MultiBall` item into the scene.
+3. If you want MultiBall tips, drag the `MultiBallTip` item into the scene. The tip will show up after first ball appending in the game.
+4. Then you can use the MultiBall related items in BME Pro HDRP like official items.
 
-2. Then you can use the MultiBall related items in BME Pro HDRP like official items.
+## Config
+
+### MultiBall
+
+| Variable Name   | Type   | Description                                                                                                                                                                                                                                                                                                                                          |
+| --------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `switchBallKey` | string | The key to switch the ball.                                                                                                                                                                                                                                                                                                                          |
+| `cameraEase`    | bool   | How the camera moves when switching the ball. If set to `true`, the camera will follow the ball smoothly. If set to `false`, the camera will jump to the ball's position.                                                                                                                                                                            |
+| `easeDistance`  | float  | This works only when `cameraEase` is set to `true`. Only when the distance between the start switching position and the target position is less than this value, the camera will follow the ball smoothly. Otherwise, the camera will jump to the target position. If the value is set to negative, the camera will always follow the ball smoothly. |
+
+### MultiBallTip
+
+| Variable Name | Type | Description                                                                                                                              |
+| ------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `duration`    | int  | How long the tip will stay on the screen. The unit is frame. If set to negative, the tip will stay on the screen until the next section. |
