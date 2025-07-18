@@ -14,6 +14,7 @@ const addFloat3 = (a, b) => new Float3(a.x + b.x, a.y + b.y, a.z + b.z);
 let switchActivated = true;
 let multiSwitchActivated = true;
 let player;
+let suffix;
 let switchSfxPlayer;
 let transferEndSfxPlayer;
 let stickyBallPreMats;
@@ -168,17 +169,20 @@ const append = ({ ballType, position }) => {
         console.error("No Append Platform found in the map.");
         return;
     }
-    const [[pp, pr, ps], tp] = closestPlatform;
+    const [[pp, pr, _ps], tp] = closestPlatform;
     levelManager.spawnVfxPRS("TransportEnd", pp, pr, new Float3(1, 1, 1));
     let { durability, temperature, wetness, power, scale } = player;
     Object.assign(allBalls[ballIndex], { durability, temperature, wetness, power, scale });
-    allBalls[ballIndex].instance = scene.createItem(`Multi${player.ballType}`, addFloat3(position, new Float3(0, 1, 0)), new Float3(0, 0, 0), new Float3(scale, scale, scale));
+    allBalls[ballIndex].instance = scene.createItem(`Multi${player.ballType}${suffix}`, addFloat3(position, new Float3(0, 1, 0)), new Float3(0, 0, 0), new Float3(scale, scale, scale));
     if (player.ballType === "StickyBall") {
         const renderer = allBalls[ballIndex].instance.getComponent("Renderer");
         const mats = renderer.getData("Materials");
         stickyBallPreMats ??= mats;
-        renderer.setData({ Materials: player.power === 0 ? stickyBallPreMats.slice(0, 2) : stickyBallPreMats });
+        renderer.setData({
+            Materials: player.power === 0 ? stickyBallPreMats.toSpliced(-1, 1, stickyOutOfPowerMat) : stickyBallPreMats,
+        });
     }
+    player.rotation = new Float3(0, 0, 0);
     !cameraEase || (easeDistance >= 0 && math.distanceFloat3(player.position, tp) >= easeDistance)
         ? player.transfer(tp)
         : (player.position = tp);
@@ -232,13 +236,15 @@ const switchBall = () => {
         power,
         scale,
     });
-    const newBall = scene.createItem(`Multi${playerType}`, playerPos, playerRot, new Float3(playerScale, playerScale, playerScale));
+    const newBall = scene.createItem(`Multi${playerType}${suffix}`, playerPos, playerRot, new Float3(playerScale, playerScale, playerScale));
     newBall.getComponent("PhysicsObject").setVelocity(playerLV, playerAV);
     if (playerType === "StickyBall") {
         const renderer = newBall.getComponent("Renderer");
         const mats = renderer.getData("Materials");
         stickyBallPreMats ??= mats;
-        renderer.setData({ Materials: playerPower === 0 ? stickyBallPreMats.slice(0, 2) : stickyBallPreMats });
+        renderer.setData({
+            Materials: playerPower === 0 ? stickyBallPreMats.toSpliced(-1, 1, stickyOutOfPowerMat) : stickyBallPreMats,
+        });
     }
     allBalls[ballIndex].instance = newBall;
     ballIndex = nextIndex;
@@ -247,7 +253,7 @@ const getClosestPlatform = (pos) => {
     let res = null;
     let minDist = Infinity;
     for (const data of appendPlatformData) {
-        const [[pp, pr, ps], tp] = data;
+        const [[pp, _pr, _ps], _tp] = data;
         const dist = math.distanceFloat3(pos, pp);
         if (dist < minDist) {
             res = data;
@@ -300,6 +306,7 @@ export const onEvents = (self, events) => {
         switchActivated = true;
     }
     if ("OnLoadLevel" in events) {
+        suffix = ["", "Mush"][levelManager.skin];
         levelManager.sendCustomEvent({ OnLoadMultiBall: { switchBallKey: switchBallKey } });
         transferEndSfxPlayer = self.getComponent("AudioPlayer");
         switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");
