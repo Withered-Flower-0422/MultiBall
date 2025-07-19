@@ -10,6 +10,10 @@ const ballTypes = [
     "StickyBall",
     "SpongeBall",
 ];
+const mouseButtons = new Set(["Left", "Middle", "Right"]);
+const checkKeyDown = (key) => mouseButtons.has(key)
+    ? inputManager.mouse.checkButtonDown(key)
+    : inputManager.keyboard.checkKeyDown(key);
 const addFloat3 = (a, b) => new Float3(a.x + b.x, a.y + b.y, a.z + b.z);
 let switchActivated = true;
 let multiSwitchActivated = true;
@@ -61,7 +65,9 @@ const createAllUIs = () => {
     uiLayer.anchorMin = uiLayer.anchorMax = new Float2(0.5, 0.95);
     uiKeyTip = uiCanvas.createUI("Text");
     uiKeyTip.parent = uiLayer;
-    uiKeyTip.text = `<b>${switchBallKey.toUpperCase()}</b>`;
+    const switchBallKey = switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
+    const prefix = mouseButtons.has(switchBallKey) ? "MOUSE " : "";
+    uiKeyTip.text = `<b>${prefix}${switchBallKey.toUpperCase()}</b>`;
     uiKeyTip.fontSize = 42;
     uiKeyTip.pivot = new Float2(0.5, 2.5);
     for (const [i, ballType] of ballTypes.entries()) {
@@ -72,6 +78,9 @@ const createAllUIs = () => {
 };
 const updateUI = () => {
     uiLayer.enabled = allBalls.length > 1;
+    const switchBallKey = switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
+    const prefix = mouseButtons.has(switchBallKey) ? "MOUSE " : "";
+    uiKeyTip.text = `<b>${prefix}${switchBallKey.toUpperCase()}</b>`;
     const exists = allBalls.map(ball => ball.instance.guid === player.guid
         ? player.ballType
         : ball.instance.getComponent("Settings").getData("Tags")[0]);
@@ -307,7 +316,7 @@ export const onEvents = (self, events) => {
     }
     if ("OnLoadLevel" in events) {
         suffix = ["", "Mush"][levelManager.skin];
-        levelManager.sendCustomEvent({ OnLoadMultiBall: { switchBallKey: switchBallKey } });
+        levelManager.sendCustomEvent({ OnLoadMultiBall: { switchBallKeys } });
         transferEndSfxPlayer = self.getComponent("AudioPlayer");
         switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");
         createAllUIs();
@@ -327,7 +336,7 @@ export const onEvents = (self, events) => {
         if (!levelManager.timerEnabled) {
             return;
         }
-        if (inputManager.keyboard.checkKeyDown(switchBallKey)) {
+        if (checkKeyDown(switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1])) {
             switchBall();
         }
         removeBall();
