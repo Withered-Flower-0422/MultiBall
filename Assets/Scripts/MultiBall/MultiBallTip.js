@@ -37,8 +37,8 @@ export const onEvents = (self, events) => {
                     Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${key} para cambiar de una a otra.`,
                     繁體中文: `當狀態列有多個球出現時，你可以使用${key}鍵進行切換。`,
                 }[settings.language]);
-                if (globalThis["duration"] >= 0)
-                    levelManager.hideTipDelay(tipGuid, globalThis["duration"]);
+                if (duration >= 0)
+                    levelManager.hideTipDelay(tipGuid, duration);
             }
         }
     }
@@ -49,7 +49,7 @@ export const onEvents = (self, events) => {
     if ("OnPostCheckpointReached" in events || "OnPostDestinationReached" in events) {
         if (!activated)
             sectionFinished = true;
-        if (globalThis["duration"] < 0 && tipGuid)
+        if (duration < 0 && tipGuid)
             levelManager.hideTip(tipGuid);
     }
 };

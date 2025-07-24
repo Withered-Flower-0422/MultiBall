@@ -17,7 +17,7 @@ export const onTrigger = (self, triggeredItem, type) => {
     if (!active ||
         !levelManager.timerEnabled ||
         triggeredItem.guid !== player?.guid ||
-        player.ballType === globalThis["switchBallType"]) {
+        player.ballType === switchBallType) {
         return;
     }
     if (type === "Enter") {
@@ -25,7 +25,7 @@ export const onTrigger = (self, triggeredItem, type) => {
         audioPlayer.play();
         levelManager.spawnVfxPRS("TransportStart", selfPos, selfRot, new Float3(1, 1, 1));
         const data = {
-            ballType: globalThis["switchBallType"],
+            ballType: switchBallType,
             position: selfPos,
         };
         levelManager.sendCustomEvent({ OnPreMultiBallAppendStart: data });
