@@ -1,6 +1,22 @@
 import { scene, levelManager, Float3 } from "gameApi";
 const subFloat3 = (a, b) => new Float3(a.x - b.x, a.y - b.y, a.z - b.z);
 const mulFloat3ByFloat = (a, b) => new Float3(a.x * b, a.y * b, a.z * b);
+const calV = (kp = 8) => {
+    let { x, y, z, w } = player.rotationQuaternion;
+    const sinHalfAngle = Math.sqrt(1 - w * w);
+    if (sinHalfAngle < 1e-9)
+        return new Float3(0, 0, 0);
+    if (w < 0) {
+        w = -w;
+    }
+    else {
+        x = -x;
+        y = -y;
+        z = -z;
+    }
+    const ratio = (kp * Math.acos(w)) / sinHalfAngle;
+    return new Float3(ratio * x, ratio * y, ratio * z);
+};
 let player;
 let selfPos;
 let selfRot;
@@ -38,7 +54,7 @@ export const onTrigger = (self, triggeredItem, type) => {
         if (!isSwitching)
             return;
         const v = mulFloat3ByFloat(subFloat3(targetPos, player.position), 5);
-        player.physicsObject.setVelocity(v, new Float3(0, 0, 0));
+        player.physicsObject.setVelocity(v, calV());
     }
 };
 export const registerEvents = ["OnLoadLevel", "OnTimerActive", "OnReceiveCustomEvent"];
