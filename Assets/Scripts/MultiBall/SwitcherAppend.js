@@ -21,6 +21,7 @@ let selfPos;
 let selfRot;
 let targetPos;
 let audioPlayer;
+const properties = {};
 let active = true;
 let isSwitching = false;
 export const init = (self, v) => {
@@ -38,6 +39,8 @@ export const onTrigger = (self, triggeredItem, type) => {
     if (type === "Enter") {
         isSwitching = true;
         audioPlayer.play();
+        const { durability, temperature, wetness, power, scale } = player;
+        Object.assign(properties, { durability, temperature, wetness, power, scale });
         levelManager.spawnVfxPRS("TransportStart", selfPos, selfRot, new Float3(1, 1, 1));
         const data = {
             ballType: switchBallType,
@@ -52,6 +55,7 @@ export const onTrigger = (self, triggeredItem, type) => {
     else {
         if (!isSwitching)
             return;
+        Object.assign(player, properties);
         player.physicsObject.setVelocity(scaleFloat3(subFloat3(targetPos, player.position), 5), getAngularVelocityToUnit(player.rotationQuaternion));
     }
 };
