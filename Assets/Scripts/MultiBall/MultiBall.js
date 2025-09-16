@@ -285,11 +285,13 @@ export const registerEvents = [
     "OnPostSwitchBallEnd",
     "OnPreSwitchBallStart",
     "OnReceiveCustomEvent",
+    "OnPostTransferBallEnd",
+    "OnPreTransferBallStart",
     "OnPostCheckpointReached",
     "OnPostDestinationReached",
 ];
 export const onEvents = (self, events) => {
-    if ("OnReceiveCustomEvent" in events) {
+    if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
         if (typeof msg === "object") {
             if ("OnLoadMultiBallPlatformPos" in msg) {
@@ -303,36 +305,37 @@ export const onEvents = (self, events) => {
             }
         }
     }
-    if ("OnPreSwitchBallStart" in events) {
+    if (events.OnPreSwitchBallStart || events.OnPreTransferBallStart) {
         if (!multiSwitchActivated) {
             levelManager.cancelEvent("OnPreSwitchBallStart");
+            levelManager.cancelEvent("OnPreTransferBallStart");
         }
         else {
             switchActivated = false;
         }
     }
-    if ("OnPostSwitchBallEnd" in events) {
+    if (events.OnPostSwitchBallEnd || events.OnPostTransferBallEnd) {
         switchActivated = true;
     }
-    if ("OnLoadLevel" in events) {
+    if (events.OnLoadLevel) {
         suffix = ["", "Mush"][levelManager.skin];
         levelManager.sendCustomEvent({ OnLoadMultiBall: { switchBallKeys } });
         transferEndSfxPlayer = self.getComponent("AudioPlayer");
         switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");
         createAllUIs();
     }
-    if ("OnTimerActive" in events) {
+    if (events.OnTimerActive) {
         player ??= scene.getPlayer();
         initAllBalls();
     }
-    if ("OnPostCheckpointReached" in events || "OnPostDestinationReached" in events) {
+    if (events.OnPostCheckpointReached || events.OnPostDestinationReached) {
         initAllBalls(true);
     }
-    if (("OnStartLevel" in events || "OnPlayerDeadEnd" in events) && player) {
+    if ((events.OnStartLevel || events.OnPlayerDeadEnd) && player) {
         initAllBalls();
         updateUI();
     }
-    if ("OnPhysicsUpdate" in events) {
+    if (events.OnPhysicsUpdate) {
         if (!levelManager.timerEnabled) {
             return;
         }
