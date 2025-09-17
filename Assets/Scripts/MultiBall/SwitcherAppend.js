@@ -61,19 +61,19 @@ export const onTrigger = (self, triggeredItem, type) => {
 };
 export const registerEvents = ["OnLoadLevel", "OnTimerActive", "OnReceiveCustomEvent"];
 export const onEvents = (self, events) => {
-    if ("OnLoadLevel" in events) {
+    if (events.OnLoadLevel) {
         ;
         [selfPos, selfRot] = self.getTransform();
         targetPos = scene.getItem(target).getTransform()[0];
         audioPlayer = self.getComponent("AudioPlayer");
     }
-    if ("OnTimerActive" in events) {
+    if (events.OnTimerActive) {
         player ??= scene.getPlayer();
     }
-    if ("OnReceiveCustomEvent" in events) {
+    if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
         if (typeof msg === "object") {
-            if ("OnMultiBallSwitch" in msg) {
+            if (msg.OnMultiBallSwitch) {
                 active = false;
                 levelManager.invoke(() => (active = true), 10);
             }

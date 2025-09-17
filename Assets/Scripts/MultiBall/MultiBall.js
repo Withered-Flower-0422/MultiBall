@@ -215,7 +215,7 @@ const switchBall = () => {
         return;
     multiSwitchActivated = false;
     levelManager.invoke(() => (multiSwitchActivated = true), 10);
-    levelManager.sendCustomEvent({ OnMultiBallSwitch: null });
+    levelManager.sendCustomEvent({ OnMultiBallSwitch: {} });
     switchSfxPlayer.play();
     const nextIndex = (ballIndex + 1) % allBalls.length;
     const nextBall = allBalls[nextIndex].instance;
@@ -294,13 +294,13 @@ export const onEvents = (self, events) => {
     if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
         if (typeof msg === "object") {
-            if ("OnLoadMultiBallPlatformPos" in msg) {
+            if (msg.OnLoadMultiBallPlatformPos) {
                 appendPlatformData.push(msg.OnLoadMultiBallPlatformPos);
             }
-            if ("OnPreMultiBallAppendStart" in msg) {
+            if (msg.OnPreMultiBallAppendStart) {
                 multiSwitchActivated = false;
             }
-            if ("OnPreMultiBallAppendEnd" in msg) {
+            if (msg.OnPreMultiBallAppendEnd) {
                 append(msg.OnPreMultiBallAppendEnd);
             }
         }

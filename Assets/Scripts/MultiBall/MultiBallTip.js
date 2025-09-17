@@ -17,13 +17,13 @@ export const registerEvents = [
     "OnPostDestinationReached",
 ];
 export const onEvents = (self, events) => {
-    if ("OnReceiveCustomEvent" in events) {
+    if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
         if (typeof msg === "object") {
-            if ("OnLoadMultiBall" in msg) {
+            if (msg.OnLoadMultiBall) {
                 switchBallKeys = msg.OnLoadMultiBall.switchBallKeys;
             }
-            if ("OnPostMultiBallAppendEnd" in msg) {
+            if (msg.OnPostMultiBallAppendEnd) {
                 if (!activated)
                     return;
                 activated = false;
@@ -42,11 +42,11 @@ export const onEvents = (self, events) => {
             }
         }
     }
-    if ("OnStartLevel" in events || ("OnPlayerDeadEnd" in events && !sectionFinished)) {
+    if (events.OnStartLevel || (events.OnPlayerDeadEnd && !sectionFinished)) {
         tipGuid = null;
         activated = true;
     }
-    if ("OnPostCheckpointReached" in events || "OnPostDestinationReached" in events) {
+    if (events.OnPostCheckpointReached || events.OnPostDestinationReached) {
         if (!activated)
             sectionFinished = true;
         if (duration < 0 && tipGuid)
