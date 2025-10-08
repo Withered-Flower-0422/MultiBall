@@ -5,9 +5,8 @@ let switchBallKeys;
 let sectionFinished = false;
 const mouseButtons = new Set(["Left", "Middle", "Right"]);
 export const init = (self, v) => {
-    for (const k in v) {
+    for (const k in v)
         globalThis[k] = v[k];
-    }
 };
 export const registerEvents = [
     "OnStartLevel",

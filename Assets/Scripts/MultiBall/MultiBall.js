@@ -1,4 +1,4 @@
-import { console, scene, levelManager, inputManager, math, uiCanvas, Float2, Float3, ColorRGBA } from "gameApi";
+import { player, console, scene, levelManager, inputManager, math, uiCanvas, Float2, Float3, ColorRGBA } from "gameApi";
 const ballTypes = [
     "WoodenBall",
     "StoneBall",
@@ -17,7 +17,6 @@ const checkKeyDown = (key) => mouseButtons.has(key)
 const addFloat3 = (a, b) => new Float3(a.x + b.x, a.y + b.y, a.z + b.z);
 let switchActivated = true;
 let multiSwitchActivated = true;
-let player;
 let suffix;
 let switchSfxPlayer;
 let transferEndSfxPlayer;
@@ -272,9 +271,8 @@ const getClosestPlatform = (pos) => {
     return res;
 };
 export const init = (self, v) => {
-    for (const k in v) {
+    for (const k in v)
         globalThis[k] = v[k];
-    }
 };
 export const registerEvents = [
     "OnLoadLevel",
@@ -325,13 +323,12 @@ export const onEvents = (self, events) => {
         createAllUIs();
     }
     if (events.OnTimerActive) {
-        player ??= scene.getPlayer();
         initAllBalls();
     }
     if (events.OnPostCheckpointReached || events.OnPostDestinationReached) {
         initAllBalls(true);
     }
-    if ((events.OnStartLevel || events.OnPlayerDeadEnd) && player) {
+    if ((events.OnStartLevel || events.OnPlayerDeadEnd) && player.ballType) {
         initAllBalls();
         updateUI();
     }

@@ -1,4 +1,4 @@
-import { scene, levelManager, Float3 } from "gameApi";
+import { player, scene, levelManager, Float3 } from "gameApi";
 const subFloat3 = (a, b) => new Float3(a.x - b.x, a.y - b.y, a.z - b.z);
 const scaleFloat3 = (a, b) => new Float3(a.x * b, a.y * b, a.z * b);
 const getAngularVelocityToUnit = ({ x, y, z, w }, kp = 8) => {
@@ -16,7 +16,6 @@ const getAngularVelocityToUnit = ({ x, y, z, w }, kp = 8) => {
     const ratio = (kp * Math.acos(w)) / sinHalfAngle;
     return new Float3(ratio * x, ratio * y, ratio * z);
 };
-let player;
 let selfPos;
 let selfRot;
 let targetPos;
@@ -25,14 +24,13 @@ const properties = {};
 let active = true;
 let isSwitching = false;
 export const init = (self, v) => {
-    for (const k in v) {
+    for (const k in v)
         globalThis[k] = v[k];
-    }
 };
 export const onTrigger = (self, triggeredItem, type) => {
     if (!active ||
         !levelManager.timerEnabled ||
-        triggeredItem.guid !== player?.guid ||
+        triggeredItem.guid !== player.guid ||
         player.ballType === switchBallType) {
         return;
     }
@@ -59,16 +57,13 @@ export const onTrigger = (self, triggeredItem, type) => {
         player.physicsObject.setVelocity(scaleFloat3(subFloat3(targetPos, player.position), 5), getAngularVelocityToUnit(player.rotationQuaternion));
     }
 };
-export const registerEvents = ["OnLoadLevel", "OnTimerActive", "OnReceiveCustomEvent"];
+export const registerEvents = ["OnLoadLevel", "OnReceiveCustomEvent"];
 export const onEvents = (self, events) => {
     if (events.OnLoadLevel) {
         ;
         [selfPos, selfRot] = self.getTransform();
         targetPos = scene.getItem(target).getTransform()[0];
         audioPlayer = self.getComponent("AudioPlayer");
-    }
-    if (events.OnTimerActive) {
-        player ??= scene.getPlayer();
     }
     if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
