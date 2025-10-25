@@ -20,7 +20,6 @@ MultiBall patch for Ballex².
 > [!WARNING]
 > MultiBall is currently incompatible with custom ball.
 
-
 ## Config
 
 ### MultiBall
