@@ -17,6 +17,10 @@ MultiBall patch for Ballex².
 3. If you want MultiBall tips, drag the `MultiBallTip` item into the scene. The tip will show up after first ball appending in the game.
 4. Then you can use the MultiBall related items in BME Pro HDRP like official items.
 
+> [!WARNING]
+> MultiBall is currently incompatible with custom ball.
+
+
 ## Config
 
 ### MultiBall
