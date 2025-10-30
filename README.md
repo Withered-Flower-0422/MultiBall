@@ -35,3 +35,43 @@ MultiBall patch for Ballex².
 | Variable Name | Type | Description                                                                                                                              |
 | ------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `duration`    | `int`  | How long the tip will stay on the screen. The unit is frame. If set to negative, the tip will stay on the screen until the next section. |
+
+## Hooks
+
+First get hooks by:
+
+```js
+let multiBallManager
+
+export const registerEvents = ["OnReceiveCustomEvent"]
+
+export const onEvents = (self, events) => {
+    if (events.OnReceiveCustomEvent) {
+        const msg = events.OnReceiveCustomEvent[0]
+        if (typeof msg === "object") {
+            if (msg.OnLoadMultiBall) {
+                multiBallManager = msg.OnLoadMultiBall.multiBallManager
+            }
+        }
+    }
+}
+```
+
+Hooks in `multiBallManager`:
+
+```ts
+declare namespace multiBallManager {
+    const removeMultiBalls: (ballTypes: BuiltinBallType[]) => void
+    const removeAllMultiBalls: (vfx: bool) => void
+    const getMultiBallData: (ballType: BuiltinBallType) => {
+        durability: float
+        temperature: float
+        wetness: float
+        power: float
+        scale: float
+        instance: Item | Player
+        index: int
+    } | null
+    const isMultiBall: (item: Item) => bool
+} 
+```

@@ -1,4 +1,30 @@
 import { player, console, scene, levelManager, inputManager, math, uiCanvas, Float2, Float3, ColorRGBA } from "gameApi";
+var multiBallManager;
+(function (multiBallManager) {
+    multiBallManager.removeMultiBalls = (ballTypes) => {
+        for (const ballType of ballTypes) {
+            removeBall(ballType);
+        }
+    };
+    multiBallManager.removeAllMultiBalls = (vfx) => {
+        initAllBalls(vfx);
+    };
+    multiBallManager.getMultiBallData = (ballType) => {
+        for (const [i, ball] of allBalls.entries()) {
+            if (ballType ===
+                (ball.instance.guid === player.guid
+                    ? player.ballType
+                    : ball.instance.getComponent("Settings").getData("Tags")[0])) {
+                return {
+                    index: i,
+                    ...ball,
+                };
+            }
+        }
+        return null;
+    };
+    multiBallManager.isMultiBall = (item) => allBalls.some(ball => ball.instance.guid === item.guid);
+})(multiBallManager || (multiBallManager = {}));
 const ballTypes = [
     "WoodenBall",
     "StoneBall",
@@ -317,7 +343,7 @@ export const onEvents = (self, events) => {
     }
     if (events.OnLoadLevel) {
         suffix = ["", "Mush"][levelManager.skin];
-        levelManager.sendCustomEvent({ OnLoadMultiBall: { switchBallKeys } });
+        levelManager.sendCustomEvent({ OnLoadMultiBall: { switchBallKeys, multiBallManager } });
         transferEndSfxPlayer = self.getComponent("AudioPlayer");
         switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");
         createAllUIs();
