@@ -10,11 +10,14 @@ var multiBallManager;
         initAllBalls(vfx);
     };
     multiBallManager.getMultiBallData = (ballType) => {
+        if (ballType === player.ballType) {
+            const { durability, temperature, wetness, power, scale } = player;
+            return { index: ballIndex, durability, temperature, wetness, power, scale, instance: player };
+        }
         for (const [i, ball] of allBalls.entries()) {
-            if (ballType ===
-                (ball.instance.guid === player.guid
-                    ? player.ballType
-                    : ball.instance.getComponent("Settings").getData("Tags")[0])) {
+            if (ball.instance.guid === player.guid)
+                continue;
+            if (ballType === ball.instance.getComponent("Settings").getData("Tags")[0]) {
                 return {
                     index: i,
                     ...ball,
