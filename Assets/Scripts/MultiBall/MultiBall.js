@@ -1,15 +1,14 @@
 import { player, console, scene, levelManager, inputManager, math, uiCanvas, Float2, Float3, ColorRGBA } from "gameApi";
-var multiBallManager;
-(function (multiBallManager) {
-    multiBallManager.removeMultiBalls = (ballTypes) => {
+const multiBallManager = {
+    removeMultiBalls: (...ballTypes) => {
         for (const ballType of ballTypes) {
             removeBall(ballType);
         }
-    };
-    multiBallManager.removeAllMultiBalls = (vfx) => {
+    },
+    removeAllMultiBalls: (vfx) => {
         initAllBalls(vfx);
-    };
-    multiBallManager.getMultiBallData = (ballType) => {
+    },
+    getMultiBallData: (ballType) => {
         if (ballType === player.ballType) {
             const { durability, temperature, wetness, power, scale } = player;
             return { index: ballIndex, durability, temperature, wetness, power, scale, instance: player };
@@ -25,9 +24,9 @@ var multiBallManager;
             }
         }
         return null;
-    };
-    multiBallManager.isMultiBall = (item) => allBalls.some(ball => ball.instance.guid === item.guid);
-})(multiBallManager || (multiBallManager = {}));
+    },
+    isMultiBall: (item) => allBalls.some(ball => ball.instance.guid === item.guid),
+};
 const ballTypes = [
     "WoodenBall",
     "StoneBall",
@@ -320,7 +319,7 @@ export const registerEvents = [
 export const onEvents = (self, events) => {
     if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
-        if (typeof msg === "object") {
+        if (msg && typeof msg === "object") {
             if (msg.OnLoadMultiBallPlatformPos) {
                 appendPlatformData.push(msg.OnLoadMultiBallPlatformPos);
             }

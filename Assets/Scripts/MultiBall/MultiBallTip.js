@@ -18,7 +18,7 @@ export const registerEvents = [
 export const onEvents = (self, events) => {
     if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
-        if (typeof msg === "object") {
+        if (msg && typeof msg === "object") {
             if (msg.OnLoadMultiBall) {
                 switchBallKeys = msg.OnLoadMultiBall.switchBallKeys;
             }

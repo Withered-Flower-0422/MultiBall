@@ -36,19 +36,24 @@ MultiBall patch for Ballex².
 | ------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `duration`    | `int`  | How long the tip will stay on the screen. The unit is frame. If set to negative, the tip will stay on the screen until the next section. |
 
-## Hooks
+## Apis
 
-First get hooks by:
+Get [apis](Assets/Scripts/MultiBall/multiBallApi.d.ts) by:
 
 ```js
-let multiBallManager
+/**
+ * @import { Message } from "multiBall:message"
+ * @import { MultiBallManager } from "multiBallApi"
+ */
+
+/** @type { MultiBallManager } */ let multiBallManager
 
 export const registerEvents = ["OnReceiveCustomEvent"]
 
 export const onEvents = (self, events) => {
     if (events.OnReceiveCustomEvent) {
-        const msg = events.OnReceiveCustomEvent[0]
-        if (typeof msg === "object") {
+        /** @type { Message } */ const msg = events.OnReceiveCustomEvent[0]
+        if (msg && typeof msg === "object") {
             if (msg.OnLoadMultiBall) {
                 multiBallManager = msg.OnLoadMultiBall.multiBallManager
             }
@@ -57,21 +62,5 @@ export const onEvents = (self, events) => {
 }
 ```
 
-Hooks in `multiBallManager`:
-
-```ts
-declare namespace multiBallManager {
-    const removeMultiBalls: (ballTypes: BuiltinBallType[]) => void
-    const removeAllMultiBalls: (vfx: bool) => void
-    const getMultiBallData: (ballType: BuiltinBallType) => {
-        durability: float
-        temperature: float
-        wetness: float
-        power: float
-        scale: float
-        instance: Item | Player
-        index: int
-    } | null
-    const isMultiBall: (item: Item) => bool
-} 
-```
+> [!TIP]
+> Install [BST](https://github.com/Withered-Flower-0422/BST) to get type hints.
