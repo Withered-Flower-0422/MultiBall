@@ -7,6 +7,7 @@ export const registerEvents = ["OnLoadLevel"];
 export const onEvents = (self, events) => {
     if (events.OnLoadLevel) {
         levelManager.sendCustomEvent({
+            _brand: "MultiBallMessage",
             OnLoadMultiBallPlatformPos: [self.getTransform(), scene.getItem(target).getTransform()[0]],
         });
     }

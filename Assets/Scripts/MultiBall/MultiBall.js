@@ -235,14 +235,17 @@ const append = ({ ballType, position }) => {
     });
     ballIndex = allBalls.length - 1;
     multiSwitchActivated = true;
-    levelManager.sendCustomEvent({ OnPostMultiBallAppendEnd: { ballType, position } });
+    levelManager.sendCustomEvent({
+        _brand: "MultiBallMessage",
+        OnPostMultiBallAppendEnd: { ballType, position },
+    });
 };
 const switchBall = () => {
     if (!multiSwitchActivated || !switchActivated || allBalls.length <= 1)
         return;
     multiSwitchActivated = false;
     levelManager.invoke(() => (multiSwitchActivated = true), 10);
-    levelManager.sendCustomEvent({ OnMultiBallSwitch: {} });
+    levelManager.sendCustomEvent({ _brand: "MultiBallMessage", OnMultiBallSwitch: {} });
     switchSfxPlayer.play();
     const nextIndex = (ballIndex + 1) % allBalls.length;
     const nextBall = allBalls[nextIndex].instance;
@@ -316,10 +319,11 @@ export const registerEvents = [
     "OnPostCheckpointReached",
     "OnPostDestinationReached",
 ];
+const isMultiBallMessage = (msg) => typeof msg === "object" && msg && msg._brand === "MultiBallMessage";
 export const onEvents = (self, events) => {
     if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
-        if (msg && typeof msg === "object") {
+        if (isMultiBallMessage(msg)) {
             if (msg.OnLoadMultiBallPlatformPos) {
                 appendPlatformData.push(msg.OnLoadMultiBallPlatformPos);
             }
@@ -345,7 +349,10 @@ export const onEvents = (self, events) => {
     }
     if (events.OnLoadLevel) {
         suffix = ["", "Mush"][levelManager.skin];
-        levelManager.sendCustomEvent({ OnLoadMultiBall: { switchBallKeys, multiBallManager } });
+        levelManager.sendCustomEvent({
+            _brand: "MultiBallMessage",
+            OnLoadMultiBall: { switchBallKeys, multiBallManager },
+        });
         transferEndSfxPlayer = self.getComponent("AudioPlayer");
         switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");
         createAllUIs();

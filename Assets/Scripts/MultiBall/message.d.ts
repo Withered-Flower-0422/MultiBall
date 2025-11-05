@@ -12,7 +12,9 @@ declare module "multiBall:message" {
     type EmptyData = { [key: PropertyKey]: never }
     type PlatformPosData = [selfTrans: [pos: Float3, rot: Float3, scl: Float3], targetPos: Float3]
 
-    type Message = {
+    type MultiBallMessage = {
+        _brand: "MultiBallMessage"
+
         OnLoadMultiBall?: LoadData
         OnLoadMultiBallPlatformPos?: PlatformPosData
         OnPreMultiBallAppendStart?: SwitchData

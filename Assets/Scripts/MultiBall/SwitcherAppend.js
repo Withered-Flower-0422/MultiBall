@@ -44,10 +44,16 @@ export const onTrigger = (self, triggeredItem, type) => {
             ballType: switchBallType,
             position: selfPos,
         };
-        levelManager.sendCustomEvent({ OnPreMultiBallAppendStart: data });
+        levelManager.sendCustomEvent({
+            _brand: "MultiBallMessage",
+            OnPreMultiBallAppendStart: data,
+        });
         levelManager.invoke(() => {
             isSwitching = false;
-            levelManager.sendCustomEvent({ OnPreMultiBallAppendEnd: data });
+            levelManager.sendCustomEvent({
+                _brand: "MultiBallMessage",
+                OnPreMultiBallAppendEnd: data,
+            });
         }, 125);
     }
     else {
@@ -58,6 +64,7 @@ export const onTrigger = (self, triggeredItem, type) => {
     }
 };
 export const registerEvents = ["OnLoadLevel", "OnReceiveCustomEvent"];
+const isMultiBallMessage = (msg) => typeof msg === "object" && msg && msg._brand === "MultiBallMessage";
 export const onEvents = (self, events) => {
     if (events.OnLoadLevel) {
         ;
@@ -67,7 +74,7 @@ export const onEvents = (self, events) => {
     }
     if (events.OnReceiveCustomEvent) {
         const msg = events.OnReceiveCustomEvent[0];
-        if (msg && typeof msg === "object") {
+        if (isMultiBallMessage(msg)) {
             if (msg.OnMultiBallSwitch) {
                 active = false;
                 levelManager.invoke(() => (active = true), 10);
