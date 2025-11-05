@@ -64,7 +64,7 @@ export const onTrigger = (self, triggeredItem, type) => {
     }
 };
 export const registerEvents = ["OnLoadLevel", "OnReceiveCustomEvent"];
-const isMultiBallMessage = (msg) => typeof msg === "object" && msg && msg._brand === "MultiBallMessage";
+const isMultiBallMessage = (msg) => msg?._brand === "MultiBallMessage";
 export const onEvents = (self, events) => {
     if (events.OnLoadLevel) {
         ;
