@@ -301,10 +301,7 @@ const getClosestPlatform = (pos) => {
     }
     return res;
 };
-export const init = (self, v) => {
-    for (const k in v)
-        globalThis[k] = v[k];
-};
+export const init = (self, v) => Object.assign(globalThis, v);
 export const registerEvents = [
     "OnLoadLevel",
     "OnStartLevel",

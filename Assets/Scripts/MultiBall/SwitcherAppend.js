@@ -23,10 +23,7 @@ let audioPlayer;
 const properties = {};
 let active = true;
 let isSwitching = false;
-export const init = (self, v) => {
-    for (const k in v)
-        globalThis[k] = v[k];
-};
+export const init = (self, v) => Object.assign(globalThis, v);
 export const onTrigger = (self, triggeredItem, type) => {
     if (!active ||
         !levelManager.timerEnabled ||
