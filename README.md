@@ -42,7 +42,7 @@ Get [apis](Assets/Scripts/MultiBall/multiBallApi.d.ts) by:
 
 ```js
 /**
- * @import { Message } from "multiBall:message"
+ * @import { MultiBallMessage } from "multiBall:message"
  * @import { MultiBallManager } from "multiBallApi"
  */
 
