@@ -38,11 +38,131 @@ const ballTypes = [
     "StickyBall",
     "SpongeBall",
 ];
+const allKeys = [
+    "Space",
+    "Enter",
+    "Tab",
+    "Backquote",
+    "Quote",
+    "Semicolon",
+    "Comma",
+    "Period",
+    "Slash",
+    "Backslash",
+    "LeftBracket",
+    "RightBracket",
+    "Minus",
+    "Equals",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "Digit1",
+    "Digit2",
+    "Digit3",
+    "Digit4",
+    "Digit5",
+    "Digit6",
+    "Digit7",
+    "Digit8",
+    "Digit9",
+    "Digit0",
+    "LeftShift",
+    "RightShift",
+    "LeftAlt",
+    "RightAlt",
+    "AltGr",
+    "LeftCtrl",
+    "RightCtrl",
+    "LeftMeta",
+    "RightMeta",
+    "LeftWindows",
+    "RightWindows",
+    "LeftApple",
+    "RightApple",
+    "LeftCommand",
+    "RightCommand",
+    "ContextMenu",
+    "Escape",
+    "LeftArrow",
+    "RightArrow",
+    "UpArrow",
+    "DownArrow",
+    "Backspace",
+    "PageDown",
+    "PageUp",
+    "Home",
+    "End",
+    "Insert",
+    "Delete",
+    "CapsLock",
+    "NumLock",
+    "PrintScreen",
+    "ScrollLock",
+    "Pause",
+    "NumpadEnter",
+    "NumpadDivide",
+    "NumpadMultiply",
+    "NumpadPlus",
+    "NumpadMinus",
+    "NumpadPeriod",
+    "NumpadEquals",
+    "Numpad0",
+    "Numpad1",
+    "Numpad2",
+    "Numpad3",
+    "Numpad4",
+    "Numpad5",
+    "Numpad6",
+    "Numpad7",
+    "Numpad8",
+    "Numpad9",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    "OEM1",
+    "OEM2",
+    "OEM3",
+    "OEM4",
+    "OEM5",
+];
 const mouseButtons = new Set(["Left", "Middle", "Right"]);
 const checkKeyDown = (key) => mouseButtons.has(key)
     ? inputManager.mouse.checkButtonDown(key)
     : inputManager.keyboard.checkKeyDown(key);
 const addFloat3 = (a, b) => new Float3(a.x + b.x, a.y + b.y, a.z + b.z);
+let duringKeyConfig = false;
 let switchActivated = true;
 let multiSwitchActivated = true;
 let suffix;
@@ -97,6 +217,14 @@ const createAllUIs = () => {
     uiKeyTip.text = `<b>${prefix}${switchBallKey.toUpperCase()}</b>`;
     uiKeyTip.fontSize = 42;
     uiKeyTip.pivot = new Float2(0.5, 2.5);
+    uiKeyTip.raycastEvent = true;
+    uiKeyTip.onPointerClick = mouseButton => {
+        if (mouseButton === 0 && !duringKeyConfig) {
+            duringKeyConfig = true;
+        }
+    };
+    uiKeyTip.onPointerEnter = () => (uiKeyTip.color = new ColorRGBA(1, 1, 1, 0.5));
+    uiKeyTip.onPointerExit = () => (uiKeyTip.color = new ColorRGBA(1, 1, 1, 1));
     for (const [i, ballType] of ballTypes.entries()) {
         ui[ballType] = createUI(i);
     }
@@ -107,7 +235,7 @@ const updateUI = () => {
     uiLayer.enabled = allBalls.length > 1;
     const switchBallKey = switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
     const prefix = mouseButtons.has(switchBallKey) ? "MOUSE " : "";
-    uiKeyTip.text = `<b>${prefix}${switchBallKey.toUpperCase()}</b>`;
+    uiKeyTip.text = duringKeyConfig ? "<b>[ . . . ]</b>" : `<b>${prefix}${switchBallKey.toUpperCase()}</b>`;
     const exists = allBalls.map(ball => ball.instance.guid === player.guid
         ? player.ballType
         : ball.instance.getComponent("Settings").getData("Tags")[0]);
@@ -241,7 +369,7 @@ const append = ({ ballType, position }) => {
     });
 };
 const switchBall = () => {
-    if (!multiSwitchActivated || !switchActivated || allBalls.length <= 1)
+    if (!multiSwitchActivated || !switchActivated || allBalls.length <= 1 || duringKeyConfig)
         return;
     multiSwitchActivated = false;
     levelManager.invoke(() => (multiSwitchActivated = true), 10);
@@ -373,5 +501,14 @@ export const onEvents = (self, events) => {
         }
         removeBall();
         updateUI();
+        if (duringKeyConfig) {
+            for (const key of allKeys) {
+                if (checkKeyDown(key)) {
+                    switchBallKeys[0] = key;
+                    duringKeyConfig = false;
+                    break;
+                }
+            }
+        }
     }
 };
