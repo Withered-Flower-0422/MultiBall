@@ -1,5 +1,8 @@
 import { player, console, scene, levelManager, inputManager, math, uiCanvas, Float2, Float3, ColorRGBA } from "gameApi";
 const multiBallManager = {
+    get switchBallKeys() {
+        return [...switchBallKeys];
+    },
     removeMultiBalls: (...ballTypes) => {
         for (const ballType of ballTypes) {
             removeBall(ballType);
@@ -476,7 +479,7 @@ export const onEvents = (self, events) => {
         suffix = ["", "Mush"][levelManager.skin];
         levelManager.sendCustomEvent({
             _brand: "MultiBallMessage",
-            OnLoadMultiBall: { switchBallKeys, multiBallManager },
+            OnLoadMultiBall: { multiBallManager },
         });
         transferEndSfxPlayer = self.getComponent("AudioPlayer");
         switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");

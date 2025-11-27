@@ -7,7 +7,7 @@ declare module "multiBall:message" {
 
     type Key = NonNoneKey | MouseButton
 
-    type LoadData = { switchBallKeys: [Key, Key]; multiBallManager: MultiBallManager }
+    type LoadData = { multiBallManager: MultiBallManager }
     type SwitchData = { ballType: BuiltinBallType; position: Float3 }
     type EmptyData = { [key: PropertyKey]: never }
     type PlatformPosData = [selfTrans: [pos: Float3, rot: Float3, scl: Float3], targetPos: Float3]

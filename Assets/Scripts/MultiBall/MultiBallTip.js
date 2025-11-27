@@ -1,7 +1,7 @@
 import { settings, levelManager } from "gameApi";
 let tipGuid;
 let activated = true;
-let switchBallKeys;
+let multiBallManager;
 let sectionFinished = false;
 const mouseButtons = new Set(["Left", "Middle", "Right"]);
 export const init = (self, v) => Object.assign(globalThis, v);
@@ -18,13 +18,13 @@ export const onEvents = (self, events) => {
         const msg = events.OnReceiveCustomEvent[0];
         if (isMultiBallMessage(msg)) {
             if (msg.OnLoadMultiBall) {
-                switchBallKeys = msg.OnLoadMultiBall.switchBallKeys;
+                multiBallManager = msg.OnLoadMultiBall.multiBallManager;
             }
             if (msg.OnPostMultiBallAppendEnd) {
                 if (!activated)
                     return;
                 activated = false;
-                const switchBallKey = switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
+                const switchBallKey = multiBallManager.switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
                 const prefix = mouseButtons.has(switchBallKey) ? "MOUSE " : "";
                 const key = prefix + switchBallKey.toUpperCase();
                 tipGuid = levelManager.showTip({
