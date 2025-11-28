@@ -1,8 +1,8 @@
 import { settings, levelManager } from "gameApi";
 let tipGuid;
 let activated = true;
-let multiBallManager;
 let sectionFinished = false;
+const multiBallManager = {};
 const mouseButtons = new Set(["Left", "Middle", "Right"]);
 export const init = (self, v) => Object.assign(globalThis, v);
 export const registerEvents = [
@@ -18,7 +18,7 @@ export const onEvents = (self, events) => {
         const msg = events.OnReceiveCustomEvent[0];
         if (isMultiBallMessage(msg)) {
             if (msg.OnLoadMultiBall) {
-                multiBallManager = msg.OnLoadMultiBall.multiBallManager;
+                Object.setPrototypeOf(multiBallManager, msg.OnLoadMultiBall.multiBallManager);
             }
             if (msg.OnPostMultiBallAppendEnd) {
                 if (!activated)
