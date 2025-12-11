@@ -49,7 +49,8 @@ Get [apis](Assets/Scripts/MultiBall/multiBallApi.d.ts) by:
 /** @param {*} msg @returns {msg is MultiBallMessage} */
 const isMultiBallMessage = msg => msg?._brand === "MultiBallMessage"
 
-const multiBallManager = /** @type {MultiBallManager} */ ({})
+/** @type {MultiBallManager} */
+let multiBallManager
 
 export const registerEvents = ["OnReceiveCustomEvent"]
 
@@ -58,7 +59,7 @@ export const onEvents = (self, events) => {
         const msg = events.OnReceiveCustomEvent[0]
         if (isMultiBallMessage(msg)) {
             if (msg.OnLoadMultiBall) {
-                Object.setPrototypeOf(multiBallManager, msg.OnLoadMultiBall.multiBallManager)
+                multiBallManager = msg.OnLoadMultiBall.multiBallManager
             }
         }
     }
