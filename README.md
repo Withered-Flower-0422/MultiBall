@@ -52,11 +52,13 @@ const isMultiBallMessage = msg => msg?._brand === "MultiBallMessage"
 /** @type {MultiBallManager} */
 let multiBallManager
 
-export const registerEvents = ["OnReceiveCustomEvent"]
+/** @satisfies {RegisterEvent[]} @typedef {ExpectTrue<IsUnique<typeof registerEvents>>} */
+export const registerEvents = /** @type {const} */ (["OnReceiveCustomEvent"])
 
-export const onEvents = (self, events) => {
-    if (events.OnReceiveCustomEvent) {
-        const msg = events.OnReceiveCustomEvent[0]
+/** @type {OnEvents<typeof registerEvents>} */
+export const onEvents = (self, { OnReceiveCustomEvent }) => {
+    if (OnReceiveCustomEvent) {
+        const msg = OnReceiveCustomEvent[0]
         if (isMultiBallMessage(msg)) {
             if (msg.OnLoadMultiBall) {
                 multiBallManager = msg.OnLoadMultiBall.multiBallManager
