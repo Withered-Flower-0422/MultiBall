@@ -13,59 +13,53 @@ MultiBall patch for Ballex².
 ## Usage
 
 1. Put the whole `Assets` folder in `%USERPROFILE%\AppData\LocalLow\Mushreb\BME Pro HDRP`.
-2. Drag the `MultiBall` item into the scene.
+2. Click `Scripts → Enable MultiBall` in the menu bar to enable the Laser system for the current scene.
 3. If you want MultiBall tips, drag the `MultiBallTip` item into the scene. The tip will show up after first ball appending in the game.
 4. Then you can use the MultiBall related items in BME Pro HDRP like official items.
 
+> [!TIP]
+> If there is no `Scripts → Enable MultiBall` in the menu bar, please restart BME.
+
+## Custom Ball Support
+
+<details>
+
+<summary>Not supported yet</summary>
+
 > [!WARNING]
 > MultiBall is currently incompatible with custom ball.
+
+1. Make an custom ball avatar and [import it into BME Pro HDRP](https://withered-flower-0422.github.io/BMT/en/advanced/assets#import-texture).
+2. Add the custom ball avatar texture to `Scene Settings → Asset Reference → Textures`.
+3. Create a custom ball [following the guide](https://withered-flower-0422.github.io/BMT/en/advanced/sceneSettings/customBall).
+4. Make two copies of the custom ball template. (See how it does in `Hierarchy → MultiBall → Balls`)
+    - First copy: Rename its template name as `Multi + {Ball Name}`.
+    - Second copy: Modify its `Renderer` as a Mush-skin version, then rename its template name as `Multi + {Ball Name} + Mush`.
+
+</details>
 
 ## Config
 
 ### MultiBall
 
-| Variable Name   | Type   | Description                                                                                                                                                                                                                                                                                                                                          |
-| --------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `switchBallKeys` | `string[]` | The keys to switch the ball. There are two strings in the array. The first is the key to switch the ball when in *Four Direction View Mode*, and the second is the key to switch the ball when in *Free View Mode* or *First Person View Mode*.                                                                                                                                                                                                                                                                                                                      |
-| `cameraEase`    | `bool`   | How the camera moves when switching the ball. If set to `true`, the camera will follow the ball smoothly. If set to `false`, the camera will jump to the ball's position.                                                                                                                                                                            |
-| `easeDistance`  | `float`  | This works only when `cameraEase` is set to `true`. Only when the distance between the start switching position and the target position is less than this value, the camera will follow the ball smoothly. Otherwise, the camera will jump to the target position. If the value is set to negative, the camera will always follow the ball smoothly. |
+| Variable Name    | Type       | Description                                                                                                                                                                                                                                                                                                                                          |
+| ---------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `switchBallKeys` | `string[]` | The keys to switch the ball. There are two strings in the array. The first is the key to switch the ball when in _Four Direction View Mode_, and the second is the key to switch the ball when in _Free View Mode_ or _First Person View Mode_.                                                                                                      |
+| `cameraEase`     | `bool`     | How the camera moves when switching the ball. If set to `true`, the camera will follow the ball smoothly. If set to `false`, the camera will jump to the ball's position.                                                                                                                                                                            |
+| `easeDistance`   | `float`    | This works only when `cameraEase` is set to `true`. Only when the distance between the start switching position and the target position is less than this value, the camera will follow the ball smoothly. Otherwise, the camera will jump to the target position. If the value is set to negative, the camera will always follow the ball smoothly. |
 
 ### MultiBallTip
 
-| Variable Name | Type | Description                                                                                                                              |
-| ------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `duration`    | `int`  | How long the tip will stay on the screen. The unit is frame. If set to negative, the tip will stay on the screen until the next section. |
+| Variable Name | Type  | Description                                                                                                                              |
+| ------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `duration`    | `int` | How long the tip will stay on the screen. The unit is frame. If set to negative, the tip will stay on the screen until the next section. |
 
 ## Apis
 
-Get [apis](Assets/Scripts/MultiBall/multiBallApi.d.ts) by:
+Get [apis](Assets/Scripts/MultiBall/message.d.ts) by:
 
 ```js
-/**
- * @import { MultiBallMessage } from "multiBall:message"
- * @import { MultiBallManager } from "multiBallApi"
- */
-
-/** @param {*} msg @returns {msg is MultiBallMessage} */
-const isMultiBallMessage = msg => msg?._brand === "MultiBallMessage"
-
-/** @type {MultiBallManager} */
-let multiBallManager
-
-/** @satisfies {RegisterEvent[]} @typedef {ExpectTrue<IsUnique<typeof registerEvents>>} */
-export const registerEvents = /** @type {const} */ (["OnReceiveCustomEvent"])
-
-/** @type {OnEvents<typeof registerEvents>} */
-export const onEvents = (self, { OnReceiveCustomEvent }) => {
-    if (OnReceiveCustomEvent) {
-        const msg = OnReceiveCustomEvent[0]
-        if (isMultiBallMessage(msg)) {
-            if (msg.OnLoadMultiBall) {
-                multiBallManager = msg.OnLoadMultiBall.multiBallManager
-            }
-        }
-    }
-}
+import multiBallManager from "Scripts/MultiBall/MultiBallManager.js"
 ```
 
 > [!TIP]
