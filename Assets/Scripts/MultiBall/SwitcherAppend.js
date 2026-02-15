@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { player, math, levelManager, Float3 } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
 import { isMultiBallMessage } from "Scripts/MultiBall/Utils.js";
@@ -47,7 +48,7 @@ export const onTrigger = (self, triggeredItem, type) => {
                 OnPreMultiBallAppendEnd: data,
             });
         }, 125);
-    } /* Stay */
+    }
     else {
         if (!isSwitching)
             return;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { settings, levelManager } from "gameApi";
 import { isMultiBallMessage, isMouseKey } from "Scripts/MultiBall/Utils.js";
 let tipGuid;

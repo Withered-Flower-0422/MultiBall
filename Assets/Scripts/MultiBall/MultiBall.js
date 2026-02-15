@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { math, scene, player, console, levelManager, inputManager, Float3, } from "gameApi";
 import { allKeys, isMouseKey, isMultiBallMessage, } from "Scripts/MultiBall/Utils.js";
 import mathEx from "Scripts/Utility/mathEx.js";
@@ -78,7 +79,7 @@ const getClosestPlatform = (pos) => {
     }
     return res;
 };
-const getSuffix = (bt = player.ballType) => `${bt === "StickyBall" && player.power === 0 ? "OOP" /* Out of Power */ : ""}${suffix}`;
+const getSuffix = (bt = player.ballType) => `${bt === "StickyBall" && player.power === 0 ? "OOP" : ""}${suffix}`;
 export const init = (self, v) => {
     Object.assign(globalThis, v);
     switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");

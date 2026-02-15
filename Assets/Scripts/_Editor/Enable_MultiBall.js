@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { editor, file, scene, dialogWindowManager, Float3 } from "editorApi";
 const builtinBalls = [
     "WoodenBall",

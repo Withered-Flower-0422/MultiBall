@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { levelManager } from "gameApi";
 export const registerEvents = ["OnLoadLevel"];
 export const onEvents = (self, { OnLoadLevel }) => {

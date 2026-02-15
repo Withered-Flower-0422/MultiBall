@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { player, variables } from "gameApi";
 export const allKeys = [
     "Space",
