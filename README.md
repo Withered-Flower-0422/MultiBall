@@ -56,7 +56,7 @@ MultiBall patch for Ballex².
 
 ## Apis
 
-Get [apis](Assets/Scripts/MultiBall/message.d.ts) by:
+Get apis by:
 
 ```js
 import multiBallManager from "Scripts/MultiBall/MultiBallManager.js"
