@@ -64,3 +64,6 @@ import multiBallManager from "Scripts/MultiBall/MultiBallManager.js"
 
 > [!TIP]
 > Install [BST](https://github.com/Withered-Flower-0422/BST) to get type hints.
+
+> [!WARNING]
+> The multi-ball system has occupied the `MultiBallManager` variable name in the `variables` module. **TRY NOT** to use this variable name in your own scripts, nor to call `variables.clear()`.
