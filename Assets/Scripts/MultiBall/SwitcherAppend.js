@@ -1,21 +1,6 @@
-import { player, scene, levelManager, Float3 } from "gameApi";
-const subFloat3 = (a, b) => new Float3(a.x - b.x, a.y - b.y, a.z - b.z);
-const scaleFloat3 = (a, b) => new Float3(a.x * b, a.y * b, a.z * b);
-const getAngularVelocityToUnit = ({ x, y, z, w }, kp = 8) => {
-    const sinHalfAngle = Math.sqrt(1 - w * w);
-    if (sinHalfAngle < 1e-9)
-        return new Float3(0, 0, 0);
-    if (w < 0) {
-        w = -w;
-    }
-    else {
-        x = -x;
-        y = -y;
-        z = -z;
-    }
-    const ratio = (kp * Math.acos(w)) / sinHalfAngle;
-    return new Float3(ratio * x, ratio * y, ratio * z);
-};
+import { player, math, levelManager, Float3 } from "gameApi";
+import mathEx from "Scripts/Utility/mathEx.js";
+import { isMultiBallMessage } from "Scripts/MultiBall/Utils.js";
 let selfPos;
 let selfRot;
 let targetPos;
@@ -23,19 +8,29 @@ let audioPlayer;
 const properties = {};
 let active = true;
 let isSwitching = false;
-export const init = (self, v) => Object.assign(globalThis, v);
+export const init = (self, v) => {
+    Object.assign(globalThis, v);
+    [selfPos, selfRot] = self.getTransform();
+    targetPos = mathEx.addFloat3(selfPos, mathEx.transFloat3WithQuat(new Float3(0, 1, 0), math.float3ToQuaternion(selfRot)));
+    audioPlayer = self.getComponent("AudioPlayer");
+};
 export const onTrigger = (self, triggeredItem, type) => {
     if (!active ||
         !levelManager.timerEnabled ||
         triggeredItem.guid !== player.guid ||
-        player.ballType === switchBallType) {
+        player.ballType === switchBallType)
         return;
-    }
     if (type === "Enter") {
         isSwitching = true;
         audioPlayer.play();
         const { durability, temperature, wetness, power, scale } = player;
-        Object.assign(properties, { durability, temperature, wetness, power, scale });
+        Object.assign(properties, {
+            durability,
+            temperature,
+            wetness,
+            power,
+            scale,
+        });
         levelManager.spawnVfxPRS("TransportStart", selfPos, selfRot, new Float3(1, 1, 1));
         const data = {
             ballType: switchBallType,
@@ -57,20 +52,15 @@ export const onTrigger = (self, triggeredItem, type) => {
         if (!isSwitching)
             return;
         Object.assign(player, properties);
-        player.physicsObject.setVelocity(scaleFloat3(subFloat3(targetPos, player.position), 5), getAngularVelocityToUnit(player.rotationQuaternion));
+        player.physicsObject.setVelocity(mathEx.scaleFloat3(mathEx.subFloat3(targetPos, player.position), 5), mathEx.getAngularVelocityToUnit(player.rotationQuaternion));
     }
 };
-export const registerEvents = ["OnLoadLevel", "OnReceiveCustomEvent"];
-const isMultiBallMessage = (msg) => msg?._brand === "MultiBallMessage";
-export const onEvents = (self, events) => {
-    if (events.OnLoadLevel) {
-        ;
-        [selfPos, selfRot] = self.getTransform();
-        targetPos = scene.getItem(target).getTransform()[0];
-        audioPlayer = self.getComponent("AudioPlayer");
-    }
-    if (events.OnReceiveCustomEvent) {
-        const msg = events.OnReceiveCustomEvent[0];
+export const registerEvents = [
+    "OnReceiveCustomEvent",
+];
+export const onEvents = (self, { OnReceiveCustomEvent }) => {
+    if (OnReceiveCustomEvent) {
+        const msg = OnReceiveCustomEvent[0];
         if (isMultiBallMessage(msg)) {
             if (msg.OnMultiBallSwitch) {
                 active = false;

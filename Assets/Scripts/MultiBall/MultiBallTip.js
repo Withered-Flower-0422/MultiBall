@@ -1,9 +1,8 @@
 import { settings, levelManager } from "gameApi";
+import { isMultiBallMessage, isMouseKey } from "Scripts/MultiBall/Utils.js";
 let tipGuid;
 let activated = true;
 let sectionFinished = false;
-let multiBallManager;
-const mouseButtons = new Set(["Left", "Middle", "Right"]);
 export const init = (self, v) => Object.assign(globalThis, v);
 export const registerEvents = [
     "OnStartLevel",
@@ -12,20 +11,16 @@ export const registerEvents = [
     "OnPostCheckpointReached",
     "OnPostDestinationReached",
 ];
-const isMultiBallMessage = (msg) => msg?._brand === "MultiBallMessage";
-export const onEvents = (self, events) => {
-    if (events.OnReceiveCustomEvent) {
-        const msg = events.OnReceiveCustomEvent[0];
+export const onEvents = (self, { OnStartLevel, OnPlayerDeadEnd, OnReceiveCustomEvent, OnPostCheckpointReached, OnPostDestinationReached, }) => {
+    if (OnReceiveCustomEvent) {
+        const msg = OnReceiveCustomEvent[0];
         if (isMultiBallMessage(msg)) {
-            if (msg.OnLoadMultiBall) {
-                multiBallManager = msg.OnLoadMultiBall.multiBallManager;
-            }
             if (msg.OnPostMultiBallAppendEnd) {
                 if (!activated)
                     return;
                 activated = false;
-                const switchBallKey = multiBallManager.switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
-                const prefix = mouseButtons.has(switchBallKey) ? "MOUSE " : "";
+                const switchBallKey = msg.OnPostMultiBallAppendEnd.switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
+                const prefix = isMouseKey(switchBallKey) ? "MOUSE " : "";
                 const key = prefix + switchBallKey.toUpperCase();
                 tipGuid = levelManager.showTip({
                     English: `When multiple balls appear in the status bar, you can use the ${key} key to switch between them.`,
@@ -39,11 +34,11 @@ export const onEvents = (self, events) => {
             }
         }
     }
-    if (events.OnStartLevel || (events.OnPlayerDeadEnd && !sectionFinished)) {
+    if (OnStartLevel || (OnPlayerDeadEnd && !sectionFinished)) {
         tipGuid = null;
         activated = true;
     }
-    if (events.OnPostCheckpointReached || events.OnPostDestinationReached) {
+    if (OnPostCheckpointReached || OnPostDestinationReached) {
         if (!activated)
             sectionFinished = true;
         if (duration < 0 && tipGuid)

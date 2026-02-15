@@ -1,440 +1,90 @@
-import { player, console, scene, levelManager, inputManager, math, uiCanvas, Float2, Float3, ColorRGBA } from "gameApi";
-const multiBallManager = {
-    get switchBallKeys() {
-        return [...switchBallKeys];
-    },
-    removeMultiBalls: (...ballTypes) => {
-        for (const ballType of ballTypes) {
-            removeBall(ballType);
-        }
-    },
-    removeAllMultiBalls: (vfx) => {
-        initAllBalls(vfx);
-    },
-    getMultiBallData: (ballType) => {
-        if (ballType === player.ballType) {
-            const { durability, temperature, wetness, power, scale } = player;
-            return { index: ballIndex, durability, temperature, wetness, power, scale, instance: player };
-        }
-        for (const [i, ball] of allBalls.entries()) {
-            if (ball.instance.guid === player.guid)
-                continue;
-            if (ballType === ball.instance.getComponent("Settings").getData("Tags")[0]) {
-                return {
-                    index: i,
-                    ...ball,
-                };
-            }
-        }
-        return null;
-    },
-    isMultiBall: (item) => allBalls.some(ball => ball.instance.guid === item.guid),
-};
-const ballTypes = [
-    "WoodenBall",
-    "StoneBall",
-    "PaperBall",
-    "IceBall",
-    "SteelBall",
-    "RubberBall",
-    "BalloonBall",
-    "StickyBall",
-    "SpongeBall",
-];
-const allKeys = [
-    "Space",
-    "Enter",
-    "Tab",
-    "Backquote",
-    "Quote",
-    "Semicolon",
-    "Comma",
-    "Period",
-    "Slash",
-    "Backslash",
-    "LeftBracket",
-    "RightBracket",
-    "Minus",
-    "Equals",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-    "Digit1",
-    "Digit2",
-    "Digit3",
-    "Digit4",
-    "Digit5",
-    "Digit6",
-    "Digit7",
-    "Digit8",
-    "Digit9",
-    "Digit0",
-    "LeftShift",
-    "RightShift",
-    "LeftAlt",
-    "RightAlt",
-    "AltGr",
-    "LeftCtrl",
-    "RightCtrl",
-    "LeftMeta",
-    "RightMeta",
-    "LeftWindows",
-    "RightWindows",
-    "LeftApple",
-    "RightApple",
-    "LeftCommand",
-    "RightCommand",
-    "ContextMenu",
-    "Escape",
-    "LeftArrow",
-    "RightArrow",
-    "UpArrow",
-    "DownArrow",
-    "Backspace",
-    "PageDown",
-    "PageUp",
-    "Home",
-    "End",
-    "Insert",
-    "Delete",
-    "CapsLock",
-    "NumLock",
-    "PrintScreen",
-    "ScrollLock",
-    "Pause",
-    "NumpadEnter",
-    "NumpadDivide",
-    "NumpadMultiply",
-    "NumpadPlus",
-    "NumpadMinus",
-    "NumpadPeriod",
-    "NumpadEquals",
-    "Numpad0",
-    "Numpad1",
-    "Numpad2",
-    "Numpad3",
-    "Numpad4",
-    "Numpad5",
-    "Numpad6",
-    "Numpad7",
-    "Numpad8",
-    "Numpad9",
-    "F1",
-    "F2",
-    "F3",
-    "F4",
-    "F5",
-    "F6",
-    "F7",
-    "F8",
-    "F9",
-    "F10",
-    "F11",
-    "F12",
-    "OEM1",
-    "OEM2",
-    "OEM3",
-    "OEM4",
-    "OEM5",
-];
-const mouseButtons = new Set(["Left", "Middle", "Right"]);
-const checkKeyDown = (key) => mouseButtons.has(key)
-    ? inputManager.mouse.checkButtonDown(key)
-    : inputManager.keyboard.checkKeyDown(key);
-const addFloat3 = (a, b) => new Float3(a.x + b.x, a.y + b.y, a.z + b.z);
-let duringKeyConfig = false;
+import { math, scene, player, console, levelManager, inputManager, Float3, } from "gameApi";
+import { allKeys, isMouseKey, isMultiBallMessage, } from "Scripts/MultiBall/Utils.js";
+import mathEx from "Scripts/Utility/mathEx.js";
+import multiBallManager from "Scripts/MultiBall/MultiBallManager.js";
 let switchActivated = true;
 let multiSwitchActivated = true;
-let suffix;
 let switchSfxPlayer;
 let transferEndSfxPlayer;
-let stickyBallPreMats;
-const appendPlatformData = [];
-let ballIndex = 0;
-const allBalls = [];
-let uiLayer;
-let uiKeyTip;
-const ui = {
-    WoodenBall: null,
-    StoneBall: null,
-    PaperBall: null,
-    IceBall: null,
-    SteelBall: null,
-    RubberBall: null,
-    BalloonBall: null,
-    StickyBall: null,
-    SpongeBall: null,
-};
-const createAllUIs = () => {
-    const createUI = (ballTypeIndex) => {
-        const panel = uiCanvas.createUI("Panel");
-        panel.sizeDelta = new Float2(0, 0);
-        panel.parent = uiLayer;
-        const imgSub = uiCanvas.createUI("Image");
-        imgSub.parent = panel;
-        imgSub.mask = true;
-        const img = uiCanvas.createUI("Image");
-        img.parent = imgSub;
-        img.texture = ballAvatars[ballTypeIndex];
-        img.sizeDelta = new Float2(0, 0);
-        img.anchorMin = new Float2(-0.1, -0.9);
-        img.anchorMax = new Float2(1.9, 1.1);
-        const bar = uiCanvas.createUI("Image");
-        bar.parent = imgSub;
-        bar.sizeDelta = new Float2(0, 0);
-        bar.color = new ColorRGBA(1, 1, 1, 0.75);
-        bar.anchorMin = new Float2(0, 0);
-        bar.anchorMax = new Float2(1, 0.1);
-        return { panel, imgSub, img, bar };
-    };
-    uiLayer = uiCanvas.createUI("Panel");
-    uiLayer.sizeDelta = new Float2(0, 0);
-    uiLayer.anchorMin = uiLayer.anchorMax = new Float2(0.5, 0.95);
-    uiKeyTip = uiCanvas.createUI("Text");
-    uiKeyTip.parent = uiLayer;
-    const switchBallKey = switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
-    const prefix = mouseButtons.has(switchBallKey) ? "MOUSE " : "";
-    uiKeyTip.text = `<b>${prefix}${switchBallKey.toUpperCase()}</b>`;
-    uiKeyTip.fontSize = 42;
-    uiKeyTip.pivot = new Float2(0.5, 2.5);
-    uiKeyTip.raycastEvent = true;
-    uiKeyTip.onPointerClick = mouseButton => {
-        if (mouseButton === 0 && !duringKeyConfig) {
-            duringKeyConfig = true;
-        }
-    };
-    uiKeyTip.onPointerEnter = () => (uiKeyTip.color = new ColorRGBA(1, 1, 1, 0.5));
-    uiKeyTip.onPointerExit = () => (uiKeyTip.color = new ColorRGBA(1, 1, 1, 1));
-    for (const [i, ballType] of ballTypes.entries()) {
-        ui[ballType] = createUI(i);
-    }
-    uiLayer.scale = new Float2(0.5, 0.5);
-    uiLayer.enabled = false;
-};
-const updateUI = () => {
-    uiLayer.enabled = allBalls.length > 1;
-    const switchBallKey = switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
-    const prefix = mouseButtons.has(switchBallKey) ? "MOUSE " : "";
-    uiKeyTip.text = duringKeyConfig ? "<b>[ . . . ]</b>" : `<b>${prefix}${switchBallKey.toUpperCase()}</b>`;
-    const exists = allBalls.map(ball => ball.instance.guid === player.guid
-        ? player.ballType
-        : ball.instance.getComponent("Settings").getData("Tags")[0]);
-    for (const ballType in ui) {
-        const index = exists.indexOf(ballType);
-        if (index === -1) {
-            ui[ballType].panel.enabled = false;
-            continue;
-        }
-        else {
-            const { panel, imgSub, bar } = ui[ballType];
-            panel.enabled = true;
-            panel.position = new Float2((index - (allBalls.length - 1) / 2) * 105, 0);
-            const c = +(index === ballIndex);
-            imgSub.color = new ColorRGBA(c, c, c, c === 1 ? 0.2 : 0.5);
-            const durability = allBalls[index].instance.guid === player.guid ? player.durability : allBalls[index].durability;
-            bar.anchorMax = new Float2(durability / 100, 0.1);
-            if (durability > 25) {
-                bar.color = new ColorRGBA(1, 1, 1, 0.75);
-            }
-            else if (durability > 20) {
-                const lerp = 5 - durability / 5;
-                bar.color = new ColorRGBA(1, math.lerp(0xff / 255, 0xe6 / 255, lerp), math.lerp(0xff / 255, 0x78 / 255, lerp), 0.75);
-            }
-            else if (durability > 15) {
-                const lerp = 4 - durability / 5;
-                bar.color = new ColorRGBA(1, math.lerp(0xe6 / 255, 0x82 / 255, lerp), math.lerp(0x78 / 255, 0x12 / 255, lerp), 0.75);
-            }
-            else if (durability > 5) {
-                const lerp = 1.5 - durability / 10;
-                bar.color = new ColorRGBA(1, math.lerp(0x82 / 255, 0x4c / 255, lerp), math.lerp(0x12 / 255, 0x28 / 255, lerp), 0.75);
-            }
-            else {
-                const lerp = 1 - durability / 5;
-                bar.color = new ColorRGBA(1, math.lerp(0x4c / 255, 0x00 / 255, lerp), math.lerp(0x28 / 255, 0x00 / 255, lerp), 0.75);
-            }
-        }
+const suffix = ["", "Mush"][levelManager.skin];
+const appendPlatformTrans = [];
+const switchBall = (key) => {
+    if (checkKeyDown(key) &&
+        switchActivated &&
+        multiSwitchActivated &&
+        !multiBallManager.duringKeyConfig) {
+        multiSwitchActivated = false;
+        levelManager.invoke(() => (multiSwitchActivated = true), 10);
+        levelManager.sendCustomEvent({
+            _brand: "MultiBallMessage",
+            OnMultiBallSwitch: { switchBallKeys },
+        });
+        if (multiBallManager.switchBall(cameraEase, easeDistance, getSuffix(), inputManager.keyboard.checkKeyHold("LeftCtrl")
+            ? multiBallManager.previousIndex
+            : multiBallManager.nextIndex))
+            switchSfxPlayer.play();
     }
 };
-const initAllBalls = (vfx = false) => {
-    switchActivated = true;
-    multiSwitchActivated = true;
-    for (let i = 0; i < allBalls.length; i++) {
-        if (allBalls[i].instance.guid !== player.guid) {
-            destroyBallItem(allBalls[i].instance, i, vfx, false);
-        }
-    }
-    allBalls.length = 0;
-    const { durability, temperature, wetness, power, scale } = player;
-    allBalls.push({
-        durability,
-        temperature,
-        wetness,
-        power,
-        scale,
-        instance: player,
-    });
-    ballIndex = 0;
-};
-const destroyBallItem = (ins, index, vfx, modGlob = true) => {
-    if (vfx) {
-        const [pos, rot, scl] = ins.getTransform();
-        levelManager.spawnVfxPRS("DestroyObject", pos, rot, scl);
-        const sfx = scene.createItem("DestroySfx", pos, new Float3(0, 0, 0), new Float3(1, 1, 1));
-        sfx.getComponent("AudioPlayer").play();
-        levelManager.invoke(() => scene.destroyItem(sfx.guid), 200);
-    }
-    scene.destroyItem(ins.guid);
-    if (modGlob) {
-        allBalls.splice(index, 1);
-        if (ballIndex >= index)
-            ballIndex--;
-    }
-};
-const removeBall = (ballType) => {
-    ballType ??= player.ballType;
-    for (let i = 0; i < allBalls.length; i++) {
-        if (allBalls[i].instance.guid === player.guid)
-            continue;
-        const ins = allBalls[i].instance;
-        if (ins.getComponent("Settings").getData("Tags")[0] === ballType) {
-            destroyBallItem(ins, i, true);
-            break;
-        }
-        else if (ins.getComponent("PhysicsObject").isDestroyed()) {
-            destroyBallItem(ins, i, false);
-            break;
-        }
-    }
-};
-const append = ({ ballType, position }) => {
+const appendBall = ({ ballType, position, }) => {
     transferEndSfxPlayer.play();
-    const closestPlatform = getClosestPlatform(position);
-    if (!closestPlatform) {
+    const targetTrans = getClosestPlatform(position);
+    if (!targetTrans) {
         console.error("No Append Platform found in the map.");
         return;
     }
-    const [[pp, pr, _ps], tp] = closestPlatform;
-    levelManager.spawnVfxPRS("TransportEnd", pp, pr, new Float3(1, 1, 1));
-    let { durability, temperature, wetness, power, scale } = player;
-    Object.assign(allBalls[ballIndex], { durability, temperature, wetness, power, scale });
-    allBalls[ballIndex].instance = scene.createItem(`Multi${player.ballType}${suffix}`, addFloat3(position, new Float3(0, 1, 0)), new Float3(0, 0, 0), new Float3(scale, scale, scale));
-    if (player.ballType === "StickyBall") {
-        const renderer = allBalls[ballIndex].instance.getComponent("Renderer");
-        const mats = renderer.getData("Materials");
-        stickyBallPreMats ??= mats;
-        renderer.setData({
-            Materials: player.power === 0 ? stickyBallPreMats.toSpliced(-1, 1, stickyOutOfPowerMat) : stickyBallPreMats,
-        });
-    }
-    player.rotation = new Float3(0, 0, 0);
-    !cameraEase || (easeDistance >= 0 && math.distanceFloat3(player.position, tp) >= easeDistance)
-        ? player.transfer(tp)
-        : (player.position = tp);
-    player.ballType = ballType;
-    player.recoverAll();
-    ({ durability, temperature, wetness, power, scale } = player);
-    allBalls.push({
-        durability,
-        temperature,
-        wetness,
-        power,
-        scale,
-        instance: player,
-    });
-    ballIndex = allBalls.length - 1;
-    multiSwitchActivated = true;
+    const [tp, tr] = targetTrans;
+    const tpAbove1 = mathEx.addFloat3(tp, mathEx.transFloat3WithQuat(new Float3(0, 1, 0), math.float3ToQuaternion(tr)));
+    multiBallManager.appendBall(ballType, [tpAbove1, new Float3(0, 0, 0), new Float3(1, 1, 1)], cameraEase, easeDistance, undefined, getSuffix(), getSuffix(ballType));
     levelManager.sendCustomEvent({
         _brand: "MultiBallMessage",
-        OnPostMultiBallAppendEnd: { ballType, position },
+        OnPostMultiBallAppendEnd: { ballType, position, switchBallKeys },
     });
+    multiSwitchActivated = true;
+    levelManager.spawnVfxPRS("TransportEnd", tpAbove1, tr, new Float3(1, 1, 1));
 };
-const switchBall = () => {
-    if (!multiSwitchActivated || !switchActivated || allBalls.length <= 1 || duringKeyConfig)
-        return;
-    multiSwitchActivated = false;
-    levelManager.invoke(() => (multiSwitchActivated = true), 10);
-    levelManager.sendCustomEvent({ _brand: "MultiBallMessage", OnMultiBallSwitch: {} });
-    switchSfxPlayer.play();
-    const nextIndex = (ballIndex + 1) % allBalls.length;
-    const nextBall = allBalls[nextIndex].instance;
-    const playerLV = player.physicsObject.getLinearVelocity();
-    const playerAV = player.physicsObject.getAngularVelocity();
-    const { position: playerPos, rotation: playerRot, ballType: playerType, power: playerPower, scale: playerScale, } = player;
-    const nextBallPhysicsObject = nextBall.getComponent("PhysicsObject");
-    const nextBallType = nextBall.getComponent("Settings").getData("Tags")[0];
-    const nextBallLV = nextBallPhysicsObject.getLinearVelocity();
-    const nextBallAV = nextBallPhysicsObject.getAngularVelocity();
-    const [nextBallPos, nextBallRot] = nextBall.getTransform();
-    scene.destroyItem(nextBall.guid);
-    let { durability, temperature, wetness, power, scale } = player;
-    Object.assign(allBalls[ballIndex], { durability, temperature, wetness, power, scale });
-    ({ durability, temperature, wetness, power, scale } = allBalls[nextIndex]);
-    allBalls[nextIndex].instance = player;
-    player.physicsObject.setVelocity(nextBallLV, nextBallAV);
-    if (!cameraEase || (easeDistance >= 0 && math.distanceFloat3(playerPos, nextBallPos) >= easeDistance))
-        player.transfer(nextBallPos);
-    Object.assign(player, {
-        position: nextBallPos,
-        ballType: nextBallType,
-        rotation: nextBallRot,
-        durability,
-        temperature,
-        wetness,
-        power,
-        scale,
-    });
-    const newBall = scene.createItem(`Multi${playerType}${suffix}`, playerPos, playerRot, new Float3(playerScale, playerScale, playerScale));
-    newBall.getComponent("PhysicsObject").setVelocity(playerLV, playerAV);
-    if (playerType === "StickyBall") {
-        const renderer = newBall.getComponent("Renderer");
-        const mats = renderer.getData("Materials");
-        stickyBallPreMats ??= mats;
-        renderer.setData({
-            Materials: playerPower === 0 ? stickyBallPreMats.toSpliced(-1, 1, stickyOutOfPowerMat) : stickyBallPreMats,
-        });
+const checkKeyConfig = () => {
+    if (multiBallManager.duringKeyConfig) {
+        for (const key of allKeys) {
+            if (checkKeyDown(key)) {
+                switchBallKeys[0] = key;
+                multiBallManager.duringKeyConfig = false;
+                break;
+            }
+        }
     }
-    allBalls[ballIndex].instance = newBall;
-    ballIndex = nextIndex;
 };
+const initMultiBall = (vfx) => {
+    switchActivated = multiSwitchActivated = true;
+    multiBallManager.init(vfx);
+};
+const updateMultiBall = () => {
+    const keybind = switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1];
+    switchBall(keybind);
+    multiBallManager.update(`${isMouseKey(keybind) ? "MOUSE " : ""}${keybind}`);
+    checkKeyConfig();
+};
+const checkKeyDown = (key) => isMouseKey(key)
+    ? inputManager.mouse.checkButtonDown(key)
+    : inputManager.keyboard.checkKeyDown(key);
 const getClosestPlatform = (pos) => {
     let res = null;
     let minDist = Infinity;
-    for (const data of appendPlatformData) {
-        const [[pp, _pr, _ps], _tp] = data;
-        const dist = math.distanceFloat3(pos, pp);
+    for (const trans of appendPlatformTrans) {
+        const dist = math.distanceFloat3(pos, trans[0]);
         if (dist < minDist) {
-            res = data;
+            res = trans;
             minDist = dist;
         }
     }
     return res;
 };
-export const init = (self, v) => Object.assign(globalThis, v);
+const getSuffix = (bt = player.ballType) => `${bt === "StickyBall" && player.power === 0 ? "OOP" : ""}${suffix}`;
+export const init = (self, v) => {
+    Object.assign(globalThis, v);
+    switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");
+    transferEndSfxPlayer = self.getComponent("AudioPlayer");
+};
 export const registerEvents = [
-    "OnLoadLevel",
     "OnStartLevel",
     "OnTimerActive",
     "OnPhysicsUpdate",
@@ -447,23 +97,22 @@ export const registerEvents = [
     "OnPostCheckpointReached",
     "OnPostDestinationReached",
 ];
-const isMultiBallMessage = (msg) => msg?._brand === "MultiBallMessage";
-export const onEvents = (self, events) => {
-    if (events.OnReceiveCustomEvent) {
-        const msg = events.OnReceiveCustomEvent[0];
+export const onEvents = (self, { OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnReceiveCustomEvent, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }) => {
+    if (OnReceiveCustomEvent) {
+        const msg = OnReceiveCustomEvent[0];
         if (isMultiBallMessage(msg)) {
-            if (msg.OnLoadMultiBallPlatformPos) {
-                appendPlatformData.push(msg.OnLoadMultiBallPlatformPos);
+            if (msg.OnLoadMultiBallPlatform) {
+                appendPlatformTrans.push(msg.OnLoadMultiBallPlatform);
             }
             if (msg.OnPreMultiBallAppendStart) {
                 multiSwitchActivated = false;
             }
             if (msg.OnPreMultiBallAppendEnd) {
-                append(msg.OnPreMultiBallAppendEnd);
+                appendBall(msg.OnPreMultiBallAppendEnd);
             }
         }
     }
-    if (events.OnPreSwitchBallStart || events.OnPreTransferBallStart) {
+    if (OnPreSwitchBallStart || OnPreTransferBallStart) {
         if (!multiSwitchActivated) {
             levelManager.cancelEvent("OnPreSwitchBallStart");
             levelManager.cancelEvent("OnPreTransferBallStart");
@@ -472,46 +121,23 @@ export const onEvents = (self, events) => {
             switchActivated = false;
         }
     }
-    if (events.OnPostSwitchBallEnd || events.OnPostTransferBallEnd) {
+    if (OnPostSwitchBallEnd || OnPostTransferBallEnd) {
         switchActivated = true;
     }
-    if (events.OnLoadLevel) {
-        suffix = ["", "Mush"][levelManager.skin];
-        levelManager.sendCustomEvent({
-            _brand: "MultiBallMessage",
-            OnLoadMultiBall: { multiBallManager },
-        });
-        transferEndSfxPlayer = self.getComponent("AudioPlayer");
-        switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");
-        createAllUIs();
+    if (OnTimerActive) {
+        initMultiBall(false);
     }
-    if (events.OnTimerActive) {
-        initAllBalls();
+    if (OnPostCheckpointReached || OnPostDestinationReached) {
+        initMultiBall(true);
     }
-    if (events.OnPostCheckpointReached || events.OnPostDestinationReached) {
-        initAllBalls(true);
+    if ((OnStartLevel || OnPlayerDeadEnd) && player.ballType) {
+        initMultiBall(false);
+        multiBallManager.updateAvatarUI();
+        multiBallManager.updateKeyTipUI();
     }
-    if ((events.OnStartLevel || events.OnPlayerDeadEnd) && player.ballType) {
-        initAllBalls();
-        updateUI();
-    }
-    if (events.OnPhysicsUpdate) {
-        if (!levelManager.timerEnabled) {
+    if (OnPhysicsUpdate) {
+        if (!levelManager.timerEnabled)
             return;
-        }
-        if (checkKeyDown(switchBallKeys[levelManager.cameraMode === 0 ? 0 : 1])) {
-            switchBall();
-        }
-        removeBall();
-        updateUI();
-        if (duringKeyConfig) {
-            for (const key of allKeys) {
-                if (checkKeyDown(key)) {
-                    switchBallKeys[0] = key;
-                    duringKeyConfig = false;
-                    break;
-                }
-            }
-        }
+        updateMultiBall();
     }
 };
