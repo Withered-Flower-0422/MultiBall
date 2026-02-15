@@ -22,12 +22,12 @@ MultiBall patch for Ballex².
 
 ## Custom Ball Support
 
+> [!WARNING]
+> MultiBall is currently incompatible with custom ball.
+
 <details>
 
 <summary>Not supported yet</summary>
-
-> [!WARNING]
-> MultiBall is currently incompatible with custom ball.
 
 1. Make an custom ball avatar, name it as the ball's name, and [import it into BME Pro HDRP](https://withered-flower-0422.github.io/BMT/en/advanced/assets#import-texture).
 2. Add the custom ball avatar texture to `Scene Settings → Asset Reference → Textures`.
