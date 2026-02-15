@@ -9,6 +9,7 @@ const COLOR_NODES = [
 ];
 const getColor = (durability) => {
     for (let i = 0; i < COLOR_NODES.length - 1; i++) {
+        // `node2` is lower than `node1`
         const [node1, color1] = COLOR_NODES[i];
         const [node2, color2] = COLOR_NODES[i + 1];
         if (durability <= node1 && durability >= node2) {
@@ -18,8 +19,15 @@ const getColor = (durability) => {
     }
     throw new Error("Invalid durability");
 };
+/**
+ * Ball avatar UI for multi ball system.
+ */
 export class Avatar {
     ui;
+    /**
+     * Creates a new ball avatar UI.
+     * @param avatarPath - Texture path of the avatar image.
+     */
     constructor(avatarPath) {
         const panel = uiCanvas.createUI("Panel");
         panel.sizeDelta = new Float2(0, 0);
@@ -43,11 +51,22 @@ export class Avatar {
         panel.enabled = false;
         this.ui = { panel, imgSub, img, bar };
     }
+    /**
+     * Sets the texture path of the avatar image.
+     * @param avatarPath - Texture path of the avatar image.
+     */
     setAvatarPath(avatarPath) {
         if (this.ui.img.texture === avatarPath)
             return;
         this.ui.img.texture = avatarPath;
     }
+    /**
+     * Updates the avatar UI.
+     * @param enabled - Whether the avatar UI is enabled.
+     * @param chosen - Whether the avatar is chosen.
+     * @param durability - The durability of the ball.
+     * @param offset - The offset of the avatar UI.
+     */
     update(enabled, chosen, durability, offset) {
         if (!(this.ui.panel.enabled = enabled))
             return;
@@ -59,6 +78,9 @@ export class Avatar {
         bar.anchorMax = new Float2(durability / 100, 0.1);
         bar.color = getColor(durability);
     }
+    /**
+     * Destroys the avatar UI.
+     */
     destroy() {
         uiCanvas.destroyUI(this.ui.panel);
     }

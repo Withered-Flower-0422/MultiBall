@@ -78,7 +78,7 @@ const getClosestPlatform = (pos) => {
     }
     return res;
 };
-const getSuffix = (bt = player.ballType) => `${bt === "StickyBall" && player.power === 0 ? "OOP" : ""}${suffix}`;
+const getSuffix = (bt = player.ballType) => `${bt === "StickyBall" && player.power === 0 ? "OOP" /* Out of Power */ : ""}${suffix}`;
 export const init = (self, v) => {
     Object.assign(globalThis, v);
     switchSfxPlayer = scene.getItem(switchSfx).getComponent("AudioPlayer");

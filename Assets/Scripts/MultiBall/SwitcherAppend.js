@@ -47,7 +47,7 @@ export const onTrigger = (self, triggeredItem, type) => {
                 OnPreMultiBallAppendEnd: data,
             });
         }, 125);
-    }
+    } /* Stay */
     else {
         if (!isSwitching)
             return;
