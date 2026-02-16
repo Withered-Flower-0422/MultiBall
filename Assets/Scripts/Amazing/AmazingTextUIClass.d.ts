@@ -15,7 +15,7 @@ export declare class AmazingTextUI {
      * @param animeDuration - The duration of the animation.
      * @param color - The color of the text.
      */
-    constructor(text: string, fontSize: float, offset: Float2, defaultShow: bool, animeDuration?: int, color?: ColorRGBA);
+    constructor(text: string, fontSize: float, offset: Float2, defaultShow: bool, animeDuration: int, color: ColorRGBA);
     private startAnimation;
     /**
      * Sets the text of the UI.

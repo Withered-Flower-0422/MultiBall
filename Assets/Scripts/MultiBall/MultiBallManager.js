@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { math, player, console, Float2, Float3, levelManager } from "gameApi";
+import { math, player, console, Float2, Float3, levelManager, ColorRGBA, } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
@@ -37,7 +37,7 @@ class MultiBallManager {
         this.cameraEase = cameraEase;
         this.easeDistance = easeDistance;
         this.sfx = { appendEnd: sfxAppendEnd, switch: sfxSwitch };
-        this.keyTipUI = new AmazingTextUI(this.keyTipText, 21, new Float2(0.5, 0.915), false, 1);
+        this.keyTipUI = new AmazingTextUI(this.keyTipText, 21, new Float2(0.5, 0.915), false, 1, new ColorRGBA(1, 1, 1, 1));
     }
     balls = [player];
     platformTrans = [];

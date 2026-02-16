@@ -7,7 +7,7 @@ export class AmazingTextUI {
     text;
     duringAnimation = false;
     ui = uiCanvas.createUI("Text");
-    constructor(text, fontSize, offset, defaultShow, animeDuration = 30, color = new ColorRGBA(1, 1, 1, 1)) {
+    constructor(text, fontSize, offset, defaultShow, animeDuration, color) {
         this.color = color;
         this.animeDuration = animeDuration;
         this.setText(text);
