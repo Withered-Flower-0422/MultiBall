@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { player, variables } from "gameApi";
+import { player, variables, inputManager } from "gameApi";
 export const allKeys = [
     "Space",
     "Enter",
@@ -118,6 +118,9 @@ export const allKeys = [
     "OEM3",
     "OEM4",
     "OEM5",
+    "Left",
+    "Middle",
+    "Right",
 ];
 export const defaultStatus = {
     durability: 100,
@@ -127,6 +130,9 @@ export const defaultStatus = {
     scale: 1,
 };
 export const isMouseKey = (key) => key === "Left" || key === "Middle" || key === "Right";
+export const checkKeyDown = (key) => isMouseKey(key)
+    ? inputManager.mouse.checkButtonDown(key)
+    : inputManager.keyboard.checkKeyDown(key);
 export const isPlayer = (obj) => "guid" in obj;
 export const isMultiBallMessage = (msg) => msg?._brand === "MultiBallMessage";
 export const getStatusFromPlayer = () => ({

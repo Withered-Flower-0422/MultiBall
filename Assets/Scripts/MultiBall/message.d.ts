@@ -7,10 +7,15 @@ declare module "multiBall:message" {
     export type Key = NonNoneKey | MouseButton
     export type SwitchBallKeys = [Key, Key]
 
+    export type Trans = [pos: Float3, rot: Float3, scl: Float3]
     export type PreAppendData = { ballType: BallType; position: Float3 }
-    export type PlatformTransData = [pos: Float3, rot: Float3, scl: Float3]
+    export type PlatformTransData = { platformTrans: Trans }
     export type SwitchData = { switchBallKeys: SwitchBallKeys }
-    export type PostAppendData = PreAppendData & SwitchData
+    export type PostAppendData = {
+        ballType: BallType
+        platformTrans: Trans
+        switchBallKeys: SwitchBallKeys
+    }
 
     export type MultiBallMessage = {
         _brand: "MultiBallMessage"

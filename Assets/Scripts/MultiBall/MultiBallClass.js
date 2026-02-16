@@ -1,27 +1,31 @@
 // @ts-nocheck
 import { levelManager, scene, Float3 } from "gameApi";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
+import { defaultStatus } from "Scripts/MultiBall/Utils.js";
 export class MultiBall {
     instance;
     avatar;
     ballType;
     status;
-    constructor(ballType, status, trans, velocity, templateNameSuffix = "") {
+    constructor(ballType, templateName, trans, velocity, status) {
+        status ??= defaultStatus;
         this.ballType = ballType;
         this.status = status;
-        this.instance = scene.createItem(`Multi${ballType}${templateNameSuffix}`, ...trans);
+        this.instance = scene.createItem(templateName, ...trans);
         this.instance.getComponent("PhysicsObject").setVelocity(...velocity);
         this.avatar = new Avatar(`Textures/Balls/${ballType}.tex`);
     }
-    switch(ballType, trans = this.instance.getTransform(), velocity = [
-        this.instance.getComponent("PhysicsObject").getLinearVelocity(),
-        this.instance.getComponent("PhysicsObject").getAngularVelocity(),
-    ], status = this.status, templateNameSuffix = "") {
+    switch(ballType, templateName, trans, velocity) {
+        const physicsObject = this.instance.getComponent("PhysicsObject");
+        trans ??= this.instance.getTransform();
+        velocity ??= [
+            physicsObject.getLinearVelocity(),
+            physicsObject.getAngularVelocity(),
+        ];
         this.ballType = ballType;
-        this.status = status;
         this.avatar.setAvatarPath(`Textures/Balls/${ballType}.tex`);
         scene.destroyItem(this.instance.guid);
-        this.instance = scene.createItem(`Multi${ballType}${templateNameSuffix}`, ...trans);
+        this.instance = scene.createItem(templateName, ...trans);
         this.instance.getComponent("PhysicsObject").setVelocity(...velocity);
     }
     destroy(vfx) {

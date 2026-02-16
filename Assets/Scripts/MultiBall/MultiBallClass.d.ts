@@ -1,7 +1,7 @@
 import { Float3 } from "gameApi";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
+import { type Status } from "Scripts/MultiBall/Utils.js";
 import type { Item, BallType } from "game:alias";
-import type { Status } from "Scripts/MultiBall/Utils.js";
 export declare class MultiBall {
     /**
      * The instance of the ball.
@@ -22,25 +22,20 @@ export declare class MultiBall {
     /**
      * Creates a new ball.
      * @param ballType - The type of ball to create.
-     * @param status - The initial status of the ball.
+     * @param templateName - The name of the template.
      * @param trans - The initial position, rotation, and scale of the ball.
      * @param velocity - The initial linear and angular velocity of the ball.
-     * @param templateNameSuffix - The suffix of the template name to use.
+     * @param status - The initial status of the ball.
      */
-    constructor(ballType: BallType, status: Status, trans: [pos: Float3, rot: Float3, scl: Float3], velocity: [linear: Float3, angular: Float3], templateNameSuffix?: string);
+    constructor(ballType: BallType, templateName: string, trans: [pos: Float3, rot: Float3, scl: Float3], velocity: [linear: Float3, angular: Float3], status?: Status);
     /**
      * Switches the ball to a new type.
      * @param ballType - The type of ball to switch to.
+     * @param templateName - The name of the template.
      * @param trans - The new position, rotation, and scale of the ball.
      * @param velocity - The new linear and angular velocity of the ball.
-     * @param status - The new status of the ball.
-     * @param templateNameSuffix - The suffix of the template name to use.
      */
-    switch(ballType: BallType, trans?: [
-        pos: Float3,
-        rot: Float3,
-        scl: Float3
-    ], velocity?: [linear: Float3, angular: Float3], status?: Status, templateNameSuffix?: string): void;
+    switch(ballType: BallType, templateName: string, trans?: [pos: Float3, rot: Float3, scl: Float3], velocity?: [linear: Float3, angular: Float3]): void;
     /**
      * Destroys the ball.
      * @param vfx - Whether to spawn a visual effect when destroying the ball.
