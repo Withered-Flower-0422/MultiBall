@@ -2,8 +2,7 @@ import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import type { BallType, Player, AudioPlayer, RegisterEvents } from "game:alias";
 import type { Status } from "Scripts/MultiBall/Utils.js";
-import type { SwitchBallKeys, Trans } from "multiBall:message";
-import type { Key } from "multiBall:message";
+import type { Key, Trans, SwitchBallKeys } from "multiBall:message";
 type NeededEvents = [
     "OnStartLevel",
     "OnTimerActive",

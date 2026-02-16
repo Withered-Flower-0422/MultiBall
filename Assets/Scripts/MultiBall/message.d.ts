@@ -2,9 +2,9 @@
 
 declare module "multiBall:message" {
     import { Float3 } from "gameApi"
-    import { BallType, NonNoneKey, MouseButton } from "game:alias"
+    import { BallType, KeyboardKey, MouseButton } from "game:alias"
 
-    export type Key = NonNoneKey | MouseButton
+    export type Key = KeyboardKey | MouseButton
     export type SwitchBallKeys = [Key, Key]
 
     export type Trans = [pos: Float3, rot: Float3, scl: Float3]

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { player, variables, inputManager } from "gameApi";
 export const allKeys = [
+    "None",
     "Space",
     "Enter",
     "Tab",
