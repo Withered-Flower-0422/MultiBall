@@ -89,7 +89,8 @@ var mathEx;
         const scaleB = Math.sin(t * theta) / sinTheta;
         return new Quaternion(scaleA * ax + scaleB * bx, scaleA * ay + scaleB * by, scaleA * az + scaleB * bz, scaleA * aw + scaleB * bw);
     };
-    mathEx.getAngularVelocityToUnit = (q, kp = 8) => {
+    mathEx.getAngularVelocityToUnit = (q, kp) => {
+        kp ??= 8;
         let { x, y, z, w } = q;
         const sinHalfAngle = Math.sqrt(1 - w * w);
         if (sinHalfAngle < 1e-9)

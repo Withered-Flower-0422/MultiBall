@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { math, player, console, Float2, Float3, levelManager, ColorRGBA, } from "gameApi";
+import { math, player, console, Float2, Float3, levelManager, ColorRGBA, inputManager, } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
@@ -94,7 +94,6 @@ class MultiBallManager {
             }
             else {
                 avatar = ball.avatar;
-                ballType = ball.ballType;
                 durability = ball.status.durability;
             }
             avatar.update(enabled, chosen, durability, (i - (this.balls.length - 1) / 2) * 52.5);
@@ -189,6 +188,7 @@ class MultiBallManager {
         });
     }
     switchBall(index) {
+        index ??= this.nextIndex;
         if (!this.canSwitch)
             return false;
         this.forceSwitchBall(index);
@@ -295,7 +295,9 @@ class MultiBallManager {
                 return;
             this.updateBalls();
             if (checkKeyDown(this.switchKey))
-                this.switchBall();
+                this.switchBall(inputManager.keyboard.checkKeyHold("LeftCtrl")
+                    ? this.previousIndex
+                    : this.nextIndex);
             this.updateUI();
         }
     }
