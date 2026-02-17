@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { math, player, console, settings, inputManager, levelManager, Float2, Float3, ColorRGBA, } from "gameApi";
+import { math, player, console, settings, inputManager, levelManager, Float2, Float3, ColorRGBA, tweenManager, } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import AmazingTextUI from "Scripts/Amazing/AmazingTextUIClass.js";
-import { allKeys, isPlayer, isMouseKey, checkKeyDown, defaultStatus, createSingleton, isMultiBallMessage, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
+import { allKeys, isPlayer, isMouseKey, checkKeyDown, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
 class MultiBallManager {
     switchKeys;
     get switchKey() {
@@ -26,6 +26,7 @@ class MultiBallManager {
     sfx;
     keyTipUI;
     keyTipGuid = null;
+    canceledEvents = new Set();
     get keyTipText() {
         return {
             English: `When multiple balls appear in the status bar, you can use the ${this.keyTipUIText} key to switch between them.`,
@@ -159,6 +160,41 @@ class MultiBallManager {
             OnPostMultiBallAppendEnd: { ballType },
         });
     }
+    startAppend(ballType, appenderTrans, audioPlayer) {
+        levelManager.sendCustomEvent({
+            _brand: "MultiBallMessage",
+            OnPreMultiBallAppendStart: { ballType },
+        });
+        if (this.canceledEvents.has("OnPreMultiBallAppendStart"))
+            return;
+        this.locks[1] = true;
+        audioPlayer.play();
+        const [appenderPos, appenderRot] = appenderTrans;
+        levelManager.spawnVfxPRS("TransportStart", appenderPos, appenderRot, new Float3(1, 1, 1));
+        const playerTargetPos = mathEx.addFloat3(appenderPos, mathEx.transFloat3WithQuat(new Float3(0, 1, 0), math.float3ToQuaternion(appenderRot)));
+        const { durability, temperature, wetness, power, scale } = player;
+        tweenManager
+            .createFloatTween(0, 0, "Linear", 125, () => {
+            Object.assign(player, {
+                durability,
+                temperature,
+                wetness,
+                power,
+                scale,
+            });
+            player.physicsObject.setVelocity(mathEx.scaleFloat3(mathEx.subFloat3(playerTargetPos, player.position), 5), mathEx.getAngularVelocityToUnit(player.rotationQuaternion));
+        }, () => {
+            this.locks[1] = false;
+            levelManager.sendCustomEvent({
+                _brand: "MultiBallMessage",
+                OnPreMultiBallAppendEnd: { ballType },
+            });
+            if (this.canceledEvents.has("OnPreMultiBallAppendEnd"))
+                return;
+            this.appendBall(ballType, appenderPos);
+        })
+            .play();
+    }
     forceSwitchBall(index) {
         index ??= this.nextIndex;
         const curIndex = this.currentIndex;
@@ -248,6 +284,9 @@ class MultiBallManager {
         }
         this.removeBall(indexesToRemove, false);
     }
+    cancelEvent(event) {
+        this.canceledEvents.add(event);
+    }
     getClosetPlatformTrans(pos) {
         let res = null;
         let minDist = Infinity;
@@ -269,15 +308,7 @@ class MultiBallManager {
         this.removeDestroyedBalls();
         this.removeBallsWithSameTypeAsPlayer();
     }
-    update({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnReceiveCustomEvent, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }) {
-        if (OnReceiveCustomEvent) {
-            const msg = OnReceiveCustomEvent[0];
-            if (isMultiBallMessage(msg)) {
-                if (msg.OnPreMultiBallAppendStart) {
-                    this.locks[1] = true;
-                }
-            }
-        }
+    update({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }) {
         if (OnPreSwitchBallStart || OnPreTransferBallStart) {
             if (this.locks[1]) {
                 levelManager.cancelEvent("OnPreSwitchBallStart");
@@ -310,6 +341,7 @@ class MultiBallManager {
                     : this.nextIndex);
             this.updateUI();
         }
+        this.canceledEvents.clear();
     }
 }
 export const multiBallManager = createSingleton(MultiBallManager);

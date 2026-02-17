@@ -2,7 +2,7 @@ import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
 import type { Status } from "Scripts/MultiBall/Utils.js";
-import type { Key, Trans, SwitchBallKeys } from "multiBall:message";
+import type { Key, Trans, SwitchBallKeys, CancelableMultiBallEvent } from "multiBall:message";
 type NeededEvents = [
     "OnStartLevel",
     "OnTimerActive",
@@ -10,7 +10,6 @@ type NeededEvents = [
     "OnPlayerDeadEnd",
     "OnPostSwitchBallEnd",
     "OnPreSwitchBallStart",
-    "OnReceiveCustomEvent",
     "OnPostTransferBallEnd",
     "OnPreTransferBallStart",
     "OnPostCheckpointReached",
@@ -53,6 +52,7 @@ declare class MultiBallManager {
     private sfx;
     private keyTipUI;
     private keyTipGuid;
+    private readonly canceledEvents;
     private get keyTipText();
     private get keyTipUIText();
     /**
@@ -125,6 +125,13 @@ declare class MultiBallManager {
      * @param appenderPos - The position of the appender.
      */
     appendBall(ballType: BallType, appenderPos: Float3): void;
+    /**
+     * Starts appending.
+     * @param ballType - The type of the ball to start appending.
+     * @param appenderTrans - The position, rotation and scale of the appender.
+     * @param audioPlayer - The audio player to play the start append sound effect.
+     */
+    startAppend(ballType: BallType, appenderTrans: Trans, audioPlayer: AudioPlayer): void;
     private forceSwitchBall;
     /**
      * Switches to the ball at the given index.
@@ -140,6 +147,7 @@ declare class MultiBallManager {
     removeBall(indexes: int[], vfx?: bool): void;
     private removeBallsWithSameTypeAsPlayer;
     private removeDestroyedBalls;
+    cancelEvent(event: CancelableMultiBallEvent): void;
     /**
      * Gets the closest platform's trans to the given position.
      * @param pos - The current position.
@@ -152,7 +160,7 @@ declare class MultiBallManager {
      * Updates the multi ball system.
      * @param e - The event data. See {@link NeededEvents | needed events}.
      */
-    update({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnReceiveCustomEvent, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached }: E): void;
+    update({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached }: E): void;
 }
 export declare const multiBallManager: MultiBallManager;
 export default multiBallManager;

@@ -10,7 +10,6 @@ export const registerEvents = [
     "OnPlayerDeadEnd",
     "OnPostSwitchBallEnd",
     "OnPreSwitchBallStart",
-    "OnReceiveCustomEvent",
     "OnPostTransferBallEnd",
     "OnPreTransferBallStart",
     "OnPostCheckpointReached",

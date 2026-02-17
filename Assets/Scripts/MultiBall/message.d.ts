@@ -19,4 +19,7 @@ declare module "multiBall:message" {
         OnPostMultiBallAppendEnd?: AppendData
         OnMultiBallSwitch?: SwitchData
     }
+
+    export type CancelableMultiBallEvent = keyof MultiBallMessage &
+        `OnPre${string}`
 }
