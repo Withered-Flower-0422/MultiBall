@@ -1,6 +1,6 @@
 import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
-import type { BallType, Player, AudioPlayer, RegisterEvents } from "game:alias";
+import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
 import type { Status } from "Scripts/MultiBall/Utils.js";
 import type { Key, Trans, SwitchBallKeys } from "multiBall:message";
 type NeededEvents = [
@@ -52,7 +52,9 @@ declare class MultiBallManager {
     private skinSuffix;
     private sfx;
     private keyTipUI;
+    private keyTipGuid;
     private get keyTipText();
+    private get keyTipUIText();
     /**
      * Initializes the multi ball manager.
      * @param switchKeys - The keys to switch balls.
@@ -95,6 +97,14 @@ declare class MultiBallManager {
     private keyConfig;
     private updateAvatarUI;
     /**
+     * Shows the key tip.
+     */
+    showKeyTip(): void;
+    /**
+     * Hides the key tip.
+     */
+    hideKeyTip(): void;
+    /**
      * Resets the multi ball system.
      * @param vfx - Whether to destroy the ball with visual effects or not. Defaults to `true`.
      */
@@ -112,9 +122,9 @@ declare class MultiBallManager {
     /**
      * Appends a new ball at the end of the ball list, and switches to it.
      * @param ballType - The type of the ball to append.
-     * @param platformTrans - The position, rotation and scale of the appender.
+     * @param appenderPos - The position of the appender.
      */
-    appendBall(ballType: BallType, platformTrans: Trans): void;
+    appendBall(ballType: BallType, appenderPos: Float3): void;
     private forceSwitchBall;
     /**
      * Switches to the ball at the given index.

@@ -1,11 +1,3 @@
 // @ts-nocheck
-import { levelManager } from "gameApi";
-export const registerEvents = ["OnLoadLevel"];
-export const onEvents = (self, { OnLoadLevel }) => {
-    if (OnLoadLevel) {
-        levelManager.sendCustomEvent({
-            _brand: "MultiBallMessage",
-            OnLoadMultiBallPlatform: { platformTrans: self.getTransform() },
-        });
-    }
-};
+import multiBallManager from "Scripts/MultiBall/MultiBallManager.js";
+export const init = (self, v) => multiBallManager.platformTrans.push(self.getTransform());

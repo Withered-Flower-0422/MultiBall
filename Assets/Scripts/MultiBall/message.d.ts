@@ -8,22 +8,15 @@ declare module "multiBall:message" {
     export type SwitchBallKeys = [Key, Key]
 
     export type Trans = [pos: Float3, rot: Float3, scl: Float3]
-    export type PreAppendData = { ballType: BallType; position: Float3 }
-    export type PlatformTransData = { platformTrans: Trans }
-    export type SwitchData = { switchBallKeys: SwitchBallKeys }
-    export type PostAppendData = {
-        ballType: BallType
-        platformTrans: Trans
-        switchBallKeys: SwitchBallKeys
-    }
+    export type AppendData = { ballType: BallType }
+    export type SwitchData = { [key: PropertyKey]: never }
 
     export type MultiBallMessage = {
         _brand: "MultiBallMessage"
 
-        OnLoadMultiBallPlatform?: PlatformTransData
-        OnPreMultiBallAppendStart?: PreAppendData
-        OnPreMultiBallAppendEnd?: PreAppendData
-        OnPostMultiBallAppendEnd?: PostAppendData
+        OnPreMultiBallAppendStart?: AppendData
+        OnPreMultiBallAppendEnd?: AppendData
+        OnPostMultiBallAppendEnd?: AppendData
         OnMultiBallSwitch?: SwitchData
     }
 }

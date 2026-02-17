@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { player, math, levelManager, Float3 } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
+import multiBallManager from "Scripts/MultiBall/MultiBallManager.js";
 import { isMultiBallMessage } from "Scripts/MultiBall/Utils.js";
 let selfPos;
 let selfRot;
@@ -33,16 +34,14 @@ export const onTrigger = (self, triggeredItem, type) => {
             scale,
         });
         levelManager.spawnVfxPRS("TransportStart", selfPos, selfRot, new Float3(1, 1, 1));
-        const data = {
-            ballType: switchBallType,
-            position: selfPos,
-        };
+        const data = { ballType: switchBallType };
         levelManager.sendCustomEvent({
             _brand: "MultiBallMessage",
             OnPreMultiBallAppendStart: data,
         });
         levelManager.invoke(() => {
             isSwitching = false;
+            multiBallManager.appendBall(switchBallType, selfPos);
             levelManager.sendCustomEvent({
                 _brand: "MultiBallMessage",
                 OnPreMultiBallAppendEnd: data,

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { math, player, console, Float2, Float3, levelManager, ColorRGBA, inputManager, } from "gameApi";
+import { math, player, console, settings, inputManager, levelManager, Float2, Float3, ColorRGBA, } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
@@ -25,7 +25,17 @@ class MultiBallManager {
     skinSuffix = ["", "Mush"][levelManager.skin];
     sfx;
     keyTipUI;
+    keyTipGuid = null;
     get keyTipText() {
+        return {
+            English: `When multiple balls appear in the status bar, you can use the ${this.keyTipUIText} key to switch between them.`,
+            简体中文: `当状态栏有多个球出现时，你可以使用${this.keyTipUIText}键进行切换。`,
+            日本語: `ステ一タスバ一に複数のボ一ルが表示された場合、${this.keyTipUIText}キ一で切り替えることができます。`,
+            Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${this.keyTipUIText} para cambiar de una a otra.`,
+            繁體中文: `當狀態列有多個球出現時，你可以使用${this.keyTipUIText}鍵進行切換。`,
+        }[settings.language];
+    }
+    get keyTipUIText() {
         const key = this.switchKey;
         const prefix = isMouseKey(key) ? "MOUSE" : "";
         return this.keyTipUI?.duringConfig
@@ -37,7 +47,7 @@ class MultiBallManager {
         this.cameraEase = cameraEase;
         this.easeDistance = easeDistance;
         this.sfx = { appendEnd: sfxAppendEnd, switch: sfxSwitch };
-        this.keyTipUI = new AmazingTextUI(this.keyTipText, 21, new Float2(0.5, 0.915), false, 1, new ColorRGBA(1, 1, 1, 1));
+        this.keyTipUI = new AmazingTextUI(this.keyTipUIText, 21, new Float2(0.5, 0.915), false, 1, new ColorRGBA(1, 1, 1, 1));
     }
     balls = [player];
     platformTrans = [];
@@ -58,7 +68,7 @@ class MultiBallManager {
     }
     playerAvatar = new Avatar(`Textures/Balls/${player.ballType}.tex`);
     updateKeyTipUI() {
-        const text = this.keyTipText;
+        const text = this.keyTipUIText;
         if (this.balls.length > 1) {
             this.keyTipUI.show(text);
         }
@@ -99,6 +109,17 @@ class MultiBallManager {
             avatar.update(enabled, chosen, durability, (i - (this.balls.length - 1) / 2) * 52.5);
         }
     }
+    showKeyTip() {
+        if (this.keyTipGuid)
+            return;
+        this.keyTipGuid = levelManager.showTip(this.keyTipText);
+    }
+    hideKeyTip() {
+        if (!this.keyTipGuid)
+            return;
+        levelManager.hideTip(this.keyTipGuid);
+        this.keyTipGuid = null;
+    }
     reset(vfx) {
         vfx ??= true;
         this.locks.fill(false);
@@ -117,7 +138,12 @@ class MultiBallManager {
         else
             this.balls.splice(index, 0, newBall);
     }
-    appendBall(ballType, platformTrans) {
+    appendBall(ballType, appenderPos) {
+        const platformTrans = this.getClosetPlatformTrans(appenderPos);
+        if (!platformTrans) {
+            console.error("No Append Platform found in the map.");
+            return;
+        }
         const [platformPos, platformRot] = platformTrans;
         this.addBall(ballType, `Multi${ballType}${this.skinSuffix}`, [
             mathEx.addFloat3(platformPos, mathEx.transFloat3WithQuat(new Float3(0, 1, 0), math.float3ToQuaternion(platformRot))),
@@ -130,11 +156,7 @@ class MultiBallManager {
         this.locks[1] = false;
         levelManager.sendCustomEvent({
             _brand: "MultiBallMessage",
-            OnPostMultiBallAppendEnd: {
-                ballType,
-                platformTrans,
-                switchBallKeys: this.switchKeys,
-            },
+            OnPostMultiBallAppendEnd: { ballType },
         });
     }
     forceSwitchBall(index) {
@@ -184,7 +206,7 @@ class MultiBallManager {
         levelManager.invoke(() => (this.locks[1] = false), 10);
         levelManager.sendCustomEvent({
             _brand: "MultiBallMessage",
-            OnMultiBallSwitch: { switchBallKeys: this.switchKeys },
+            OnMultiBallSwitch: {},
         });
     }
     switchBall(index) {
@@ -251,20 +273,8 @@ class MultiBallManager {
         if (OnReceiveCustomEvent) {
             const msg = OnReceiveCustomEvent[0];
             if (isMultiBallMessage(msg)) {
-                if (msg.OnLoadMultiBallPlatform) {
-                    this.platformTrans.push(msg.OnLoadMultiBallPlatform.platformTrans);
-                }
                 if (msg.OnPreMultiBallAppendStart) {
                     this.locks[1] = true;
-                }
-                OnPreMultiBallAppendEnd: if (msg.OnPreMultiBallAppendEnd) {
-                    const { ballType, position } = msg.OnPreMultiBallAppendEnd;
-                    const platformTrans = this.getClosetPlatformTrans(position);
-                    if (!platformTrans) {
-                        console.error("No Append Platform found in the map.");
-                        break OnPreMultiBallAppendEnd;
-                    }
-                    this.appendBall(ballType, platformTrans);
                 }
             }
         }
