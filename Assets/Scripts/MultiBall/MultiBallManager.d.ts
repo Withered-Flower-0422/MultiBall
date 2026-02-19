@@ -1,8 +1,9 @@
 import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
+import Manager from "Scripts/Manager/Manager.js";
 import type { Status } from "Scripts/MultiBall/Utils.js";
-import type { Key, Trans, SwitchBallKeys, MultiBallMessage, CancelableMultiBallEvent } from "multiBall:message";
+import type { Key, Trans, SwitchBallKeys, MultiBallMessage } from "multiBall:message";
 type NeededEvents = [
     "OnStartLevel",
     "OnTimerActive",
@@ -16,9 +17,7 @@ type NeededEvents = [
     "OnPostDestinationReached"
 ];
 type E = RegisterEvents<NeededEvents>;
-declare class MultiBallManager {
-    #private;
-    isMultiBallMessage(msg: any): msg is MultiBallMessage;
+declare class MultiBallManager extends Manager<MultiBallMessage> {
     /**
      * The keys to switch balls.
      * The first key is for `Four Direction` view mode,
@@ -54,7 +53,6 @@ declare class MultiBallManager {
     private sfx;
     private keyTipUI;
     private keyTipGuid;
-    private readonly canceledEvents;
     private get keyTipText();
     private get keyTipUIText();
     /**
@@ -149,7 +147,6 @@ declare class MultiBallManager {
     removeBall(indexes: int[], vfx?: bool): void;
     private removeBallsWithSameTypeAsPlayer;
     private removeDestroyedBalls;
-    cancelEvent(event: CancelableMultiBallEvent): void;
     /**
      * Gets the closest platform's trans to the given position.
      * @param pos - The current position.

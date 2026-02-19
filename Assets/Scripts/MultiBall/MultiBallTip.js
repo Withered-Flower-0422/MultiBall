@@ -14,7 +14,7 @@ export const registerEvents = [
 export const onEvents = (self, { OnStartLevel, OnPlayerDeadEnd, OnReceiveCustomEvent, OnPostCheckpointReached, OnPostDestinationReached, }) => {
     if (OnReceiveCustomEvent) {
         const msg = OnReceiveCustomEvent[0];
-        if (multiBallManager.isMultiBallMessage(msg)) {
+        if (multiBallManager.isSelfMessage(msg)) {
             if (msg.OnPostMultiBallAppendEnd) {
                 if (!activated)
                     return;

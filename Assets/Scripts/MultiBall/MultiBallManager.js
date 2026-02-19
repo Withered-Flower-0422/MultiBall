@@ -5,11 +5,8 @@ import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import AmazingTextUI from "Scripts/Amazing/AmazingTextUIClass.js";
 import { allKeys, isPlayer, isMouseKey, checkKeyDown, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
-class MultiBallManager {
-    #messageSymbol = Symbol("MultiBallMessage");
-    isMultiBallMessage(msg) {
-        return msg?._brand === this.#messageSymbol;
-    }
+import Manager from "Scripts/Manager/Manager.js";
+class MultiBallManager extends Manager {
     switchKeys;
     get switchKey() {
         return this.switchKeys[levelManager.cameraMode === 0 ? 0 : 1];
@@ -30,7 +27,6 @@ class MultiBallManager {
     sfx;
     keyTipUI;
     keyTipGuid = null;
-    canceledEvents = new Set();
     get keyTipText() {
         return {
             English: `When multiple balls appear in the status bar, you can use the ${this.keyTipUIText} key to switch between them.`,
@@ -160,13 +156,13 @@ class MultiBallManager {
         levelManager.spawnVfxPRS("TransportEnd", platformPos, platformRot, new Float3(1, 1, 1));
         this.locks[1] = false;
         levelManager.sendCustomEvent({
-            _brand: this.#messageSymbol,
+            _brand: this.messageSymbol,
             OnPostMultiBallAppendEnd: { ballType },
         });
     }
     startAppend(ballType, appenderTrans, audioPlayer) {
         levelManager.sendCustomEvent({
-            _brand: this.#messageSymbol,
+            _brand: this.messageSymbol,
             OnPreMultiBallAppendStart: { ballType },
         });
         if (this.canceledEvents.has("OnPreMultiBallAppendStart"))
@@ -190,7 +186,7 @@ class MultiBallManager {
         }, () => {
             this.locks[1] = false;
             levelManager.sendCustomEvent({
-                _brand: this.#messageSymbol,
+                _brand: this.messageSymbol,
                 OnPreMultiBallAppendEnd: { ballType },
             });
             if (this.canceledEvents.has("OnPreMultiBallAppendEnd"))
@@ -245,7 +241,7 @@ class MultiBallManager {
         this.locks[1] = true;
         levelManager.invoke(() => (this.locks[1] = false), 10);
         levelManager.sendCustomEvent({
-            _brand: this.#messageSymbol,
+            _brand: this.messageSymbol,
             OnMultiBallSwitch: {},
         });
     }
@@ -287,9 +283,6 @@ class MultiBallManager {
             }
         }
         this.removeBall(indexesToRemove, false);
-    }
-    cancelEvent(event) {
-        this.canceledEvents.add(event);
     }
     getClosetPlatformTrans(pos) {
         let res = null;
