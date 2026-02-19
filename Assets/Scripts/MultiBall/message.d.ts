@@ -12,7 +12,7 @@ declare module "multiBall:message" {
     export type SwitchData = { [key: PropertyKey]: never }
 
     export type MultiBallMessage = {
-        _brand: "MultiBallMessage"
+        _brand: symbol
 
         OnPreMultiBallAppendStart?: AppendData
         OnPreMultiBallAppendEnd?: AppendData

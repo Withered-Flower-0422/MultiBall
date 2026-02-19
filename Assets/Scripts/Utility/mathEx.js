@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { math, Float3, Quaternion } from "gameApi";
+import { math, Float2, Float3, Quaternion } from "gameApi";
 export { mathEx };
 var mathEx;
 (function (mathEx) {
@@ -21,6 +21,25 @@ var mathEx;
         return diff > mathEx.PI ? diff - mathEx.TWO_PI : diff;
     };
     mathEx.angleFloat2 = (value) => Math.atan2(value.y, value.x);
+    mathEx.lengthFloat2 = (value) => Math.sqrt(value.x * value.x + value.y * value.y);
+    mathEx.normalizeFloat2 = (value) => {
+        const len = mathEx.lengthFloat2(value);
+        return new Float2(value.x / len, value.y / len);
+    };
+    mathEx.scaleFloat2 = (value, ...scalars) => {
+        let { x, y } = value;
+        for (const s of scalars) {
+            x *= s;
+            y *= s;
+        }
+        return new Float2(x, y);
+    };
+    mathEx.rotateFloat2 = (value, angle) => {
+        const { x, y } = value;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        return new Float2(x * cos - y * sin, x * sin + y * cos);
+    };
     mathEx.addFloat3 = (...values) => {
         let x = 0;
         let y = 0;

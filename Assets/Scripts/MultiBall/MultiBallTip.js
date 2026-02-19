@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { levelManager } from "gameApi";
 import multiBallManager from "Scripts/MultiBall/MultiBallManager.js";
-import { isMultiBallMessage } from "Scripts/MultiBall/Utils.js";
 let activated = true;
 let sectionFinished = false;
 export const init = (self, v) => Object.assign(globalThis, v);
@@ -15,7 +14,7 @@ export const registerEvents = [
 export const onEvents = (self, { OnStartLevel, OnPlayerDeadEnd, OnReceiveCustomEvent, OnPostCheckpointReached, OnPostDestinationReached, }) => {
     if (OnReceiveCustomEvent) {
         const msg = OnReceiveCustomEvent[0];
-        if (isMultiBallMessage(msg)) {
+        if (multiBallManager.isMultiBallMessage(msg)) {
             if (msg.OnPostMultiBallAppendEnd) {
                 if (!activated)
                     return;

@@ -135,7 +135,6 @@ export const checkKeyDown = (key) => isMouseKey(key)
     ? inputManager.mouse.checkButtonDown(key)
     : inputManager.keyboard.checkKeyDown(key);
 export const isPlayer = (obj) => "guid" in obj;
-export const isMultiBallMessage = (msg) => msg?._brand === "MultiBallMessage";
 export const getStatusFromPlayer = () => ({
     durability: player.durability,
     temperature: player.temperature,

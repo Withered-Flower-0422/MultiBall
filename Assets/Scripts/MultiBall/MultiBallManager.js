@@ -6,6 +6,10 @@ import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import AmazingTextUI from "Scripts/Amazing/AmazingTextUIClass.js";
 import { allKeys, isPlayer, isMouseKey, checkKeyDown, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
 class MultiBallManager {
+    #messageSymbol = Symbol("MultiBallMessage");
+    isMultiBallMessage(msg) {
+        return msg?._brand === this.#messageSymbol;
+    }
     switchKeys;
     get switchKey() {
         return this.switchKeys[levelManager.cameraMode === 0 ? 0 : 1];
@@ -156,13 +160,13 @@ class MultiBallManager {
         levelManager.spawnVfxPRS("TransportEnd", platformPos, platformRot, new Float3(1, 1, 1));
         this.locks[1] = false;
         levelManager.sendCustomEvent({
-            _brand: "MultiBallMessage",
+            _brand: this.#messageSymbol,
             OnPostMultiBallAppendEnd: { ballType },
         });
     }
     startAppend(ballType, appenderTrans, audioPlayer) {
         levelManager.sendCustomEvent({
-            _brand: "MultiBallMessage",
+            _brand: this.#messageSymbol,
             OnPreMultiBallAppendStart: { ballType },
         });
         if (this.canceledEvents.has("OnPreMultiBallAppendStart"))
@@ -186,7 +190,7 @@ class MultiBallManager {
         }, () => {
             this.locks[1] = false;
             levelManager.sendCustomEvent({
-                _brand: "MultiBallMessage",
+                _brand: this.#messageSymbol,
                 OnPreMultiBallAppendEnd: { ballType },
             });
             if (this.canceledEvents.has("OnPreMultiBallAppendEnd"))
@@ -241,7 +245,7 @@ class MultiBallManager {
         this.locks[1] = true;
         levelManager.invoke(() => (this.locks[1] = false), 10);
         levelManager.sendCustomEvent({
-            _brand: "MultiBallMessage",
+            _brand: this.#messageSymbol,
             OnMultiBallSwitch: {},
         });
     }

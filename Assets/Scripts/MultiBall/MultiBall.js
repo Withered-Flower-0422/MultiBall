@@ -15,8 +15,6 @@ export const registerEvents = [
     "OnPostCheckpointReached",
     "OnPostDestinationReached",
 ];
-export const onEvents = (self, e) => {
-    if (e.OnLoadLevel)
-        multiBallManager.init(switchBallKeys, cameraEase, easeDistance, self.getComponent("AudioPlayer"), scene.getItem(switchSfx).getComponent("AudioPlayer"));
-    multiBallManager.update(e);
-};
+export const onEvents = (self, e) => e.OnLoadLevel
+    ? multiBallManager.init(switchBallKeys, cameraEase, easeDistance, self.getComponent("AudioPlayer"), scene.getItem(switchSfx).getComponent("AudioPlayer"))
+    : multiBallManager.update(e);

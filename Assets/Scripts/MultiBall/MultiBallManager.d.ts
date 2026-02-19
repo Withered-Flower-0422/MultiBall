@@ -2,7 +2,7 @@ import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
 import type { Status } from "Scripts/MultiBall/Utils.js";
-import type { Key, Trans, SwitchBallKeys, CancelableMultiBallEvent } from "multiBall:message";
+import type { Key, Trans, SwitchBallKeys, MultiBallMessage, CancelableMultiBallEvent } from "multiBall:message";
 type NeededEvents = [
     "OnStartLevel",
     "OnTimerActive",
@@ -17,6 +17,8 @@ type NeededEvents = [
 ];
 type E = RegisterEvents<NeededEvents>;
 declare class MultiBallManager {
+    #private;
+    isMultiBallMessage(msg: any): msg is MultiBallMessage;
     /**
      * The keys to switch balls.
      * The first key is for `Four Direction` view mode,

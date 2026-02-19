@@ -1,5 +1,5 @@
 import type { Player } from "game:alias";
-import type { Key, MultiBallMessage } from "multiBall:message";
+import type { Key } from "multiBall:message";
 import type { MultiBall } from "Scripts/MultiBall/MultiBallClass.js";
 export interface Status {
     durability: float;
@@ -19,6 +19,5 @@ export declare const defaultStatus: {
 export declare const isMouseKey: (key: Key) => key is "Left" | "Middle" | "Right";
 export declare const checkKeyDown: (key: Key) => boolean;
 export declare const isPlayer: (obj: MultiBall | Player) => obj is Player;
-export declare const isMultiBallMessage: (msg: any) => msg is MultiBallMessage;
 export declare const getStatusFromPlayer: () => Status;
 export declare const createSingleton: <T extends new (...args: any[]) => InstanceType<T>>(cls: T, ...args: ConstructorParameters<T>) => InstanceType<T>;
