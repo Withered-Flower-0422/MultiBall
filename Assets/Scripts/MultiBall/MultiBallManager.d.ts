@@ -1,7 +1,7 @@
 import { Float3 } from "gameApi";
+import Manager from "Scripts/Manager/Manager.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
-import Manager from "Scripts/Manager/Manager.js";
 import type { Status } from "Scripts/MultiBall/Utils.js";
 import type { Key, Trans, SwitchBallKeys, MultiBallMessage } from "multiBall:message";
 type NeededEvents = [
@@ -136,9 +136,8 @@ declare class MultiBallManager extends Manager<MultiBallMessage> {
     /**
      * Switches to the ball at the given index.
      * @param index - The index of the ball to switch to. Defaults to the next ball.
-     * @returns Whether the switch is successful or not.
      */
-    switchBall(index?: int): boolean;
+    switchBall(index?: int): void;
     /**
      * Removes the balls at the given indexes.
      * @param indexes - The indexes of the balls to remove.

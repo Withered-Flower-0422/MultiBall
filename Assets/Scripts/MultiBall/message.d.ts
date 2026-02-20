@@ -17,6 +17,7 @@ declare module "multiBall:message" {
         OnPreMultiBallAppendStart?: AppendData
         OnPreMultiBallAppendEnd?: AppendData
         OnPostMultiBallAppendEnd?: AppendData
-        OnMultiBallSwitch?: SwitchData
+        OnPreMultiBallSwitch?: SwitchData
+        OnPostMultiBallSwitch?: SwitchData
     }
 }

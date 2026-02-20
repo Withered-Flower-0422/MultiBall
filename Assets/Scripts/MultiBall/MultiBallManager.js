@@ -1,11 +1,11 @@
 // @ts-nocheck
 import { math, player, console, settings, inputManager, levelManager, Float2, Float3, ColorRGBA, tweenManager, } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
+import Manager from "Scripts/Manager/Manager.js";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import AmazingTextUI from "Scripts/Amazing/AmazingTextUIClass.js";
 import { allKeys, isPlayer, isMouseKey, checkKeyDown, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
-import Manager from "Scripts/Manager/Manager.js";
 class MultiBallManager extends Manager {
     switchKeys;
     get switchKey() {
@@ -240,17 +240,22 @@ class MultiBallManager extends Manager {
         this.sfx.switch.play();
         this.locks[1] = true;
         levelManager.invoke(() => (this.locks[1] = false), 10);
-        levelManager.sendCustomEvent({
-            _brand: this.messageSymbol,
-            OnMultiBallSwitch: {},
-        });
     }
     switchBall(index) {
         index ??= this.nextIndex;
         if (!this.canSwitch)
-            return false;
+            return;
+        levelManager.sendCustomEvent({
+            _brand: this.messageSymbol,
+            OnPreMultiBallSwitch: {},
+        });
+        if (this.canceledEvents.has("OnPreMultiBallSwitch"))
+            return;
         this.forceSwitchBall(index);
-        return true;
+        levelManager.sendCustomEvent({
+            _brand: this.messageSymbol,
+            OnPostMultiBallSwitch: {},
+        });
     }
     removeBall(indexes, vfx) {
         vfx ??= true;
