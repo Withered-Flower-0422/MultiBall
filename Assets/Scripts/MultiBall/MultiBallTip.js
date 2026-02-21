@@ -1,6 +1,7 @@
 // @ts-nocheck
-import { levelManager } from "gameApi";
+import { levelManager, settings } from "gameApi";
 import multiBallManager from "Scripts/MultiBall/MultiBallManager.js";
+let tipGuid = null;
 let activated = true;
 let sectionFinished = false;
 export const init = (self, v) => Object.assign(globalThis, v);
@@ -11,27 +12,39 @@ export const registerEvents = [
     "OnPostCheckpointReached",
     "OnPostDestinationReached",
 ];
+const showTip = () => {
+    if (tipGuid)
+        return;
+    tipGuid = levelManager.showTip(multiBallManager.tipText.switch[settings.language]);
+};
+const hideTip = () => {
+    if (!tipGuid)
+        return;
+    levelManager.hideTip(tipGuid);
+    tipGuid = null;
+};
 export const onEvents = (self, { OnStartLevel, OnPlayerDeadEnd, OnReceiveCustomEvent, OnPostCheckpointReached, OnPostDestinationReached, }) => {
     if (OnReceiveCustomEvent) {
-        const msg = OnReceiveCustomEvent[0];
-        if (multiBallManager.isSelfMessage(msg)) {
-            if (msg.OnPostMultiBallAppendEnd) {
+        const e = OnReceiveCustomEvent[0];
+        if (multiBallManager.isSelfEvent(e)) {
+            if (e.OnPostMultiBallAppendEnd) {
                 if (!activated)
                     return;
                 activated = false;
-                multiBallManager.showKeyTip();
+                showTip();
                 if (duration >= 0)
-                    levelManager.invoke(multiBallManager.hideKeyTip, duration);
+                    levelManager.invoke(hideTip, duration);
             }
         }
     }
     if (OnStartLevel || (OnPlayerDeadEnd && !sectionFinished)) {
+        tipGuid = null;
         activated = true;
     }
     if (OnPostCheckpointReached || OnPostDestinationReached) {
         if (!activated)
             sectionFinished = true;
         if (duration < 0)
-            multiBallManager.hideKeyTip();
+            hideTip();
     }
 };

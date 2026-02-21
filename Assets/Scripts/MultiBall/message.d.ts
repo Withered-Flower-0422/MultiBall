@@ -9,7 +9,7 @@ declare module "multiBall:message" {
 
     export type Trans = [pos: Float3, rot: Float3, scl: Float3]
     export type AppendData = { ballType: BallType }
-    export type SwitchData = { [key: PropertyKey]: never }
+    export type SwitchData = { index: int }
 
     export type MultiBallMessage = {
         _brand: symbol

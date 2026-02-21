@@ -16,9 +16,9 @@ export const registerEvents = [
 ];
 export const onEvents = (self, { OnReceiveCustomEvent }) => {
     if (OnReceiveCustomEvent) {
-        const msg = OnReceiveCustomEvent[0];
-        if (multiBallManager.isSelfMessage(msg)) {
-            if (msg.OnPostMultiBallSwitch) {
+        const e = OnReceiveCustomEvent[0];
+        if (multiBallManager.isSelfEvent(e)) {
+            if (e.OnPostMultiBallSwitch) {
                 active = false;
                 levelManager.invoke(() => (active = true), 10);
             }

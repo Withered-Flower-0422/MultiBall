@@ -1,15 +1,17 @@
 // @ts-nocheck
-import { ColorRGBA, tweenManager, uiCanvas } from "gameApi";
-export class AmazingTextUI {
+import { uiCanvas, inputManager, tweenManager, ColorRGBA, } from "gameApi";
+export default class AmazingTextUI {
     color;
     animeDuration;
+    allowMouseRightToggle;
     duringConfig = false;
     text;
     duringAnimation = false;
     ui = uiCanvas.createUI("Text");
-    constructor(text, fontSize, offset, defaultShow, animeDuration, color) {
+    constructor(text, fontSize, offset, defaultShow, animeDuration, color, allowMouseRightToggle) {
         this.color = color;
         this.animeDuration = animeDuration;
+        this.allowMouseRightToggle = allowMouseRightToggle;
         this.setText(text);
         this.ui.color = color;
         this.ui.fontSize = fontSize;
@@ -82,9 +84,10 @@ export class AmazingTextUI {
         }
     }
     update(text) {
-        if (this.ui.enabled && !this.duringAnimation && this.text !== text) {
+        if (this.allowMouseRightToggle &&
+            inputManager.mouse.checkButtonDown("Right"))
+            this.toggle(text);
+        if (this.ui.enabled && !this.duringAnimation && this.text !== text)
             this.setText(text);
-        }
     }
 }
-export default AmazingTextUI;

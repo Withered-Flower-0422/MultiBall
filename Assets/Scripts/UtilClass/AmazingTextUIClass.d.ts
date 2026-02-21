@@ -1,7 +1,8 @@
-import { ColorRGBA, Float2 } from "gameApi";
-export declare class AmazingTextUI {
+import { Float2, ColorRGBA } from "gameApi";
+export default class AmazingTextUI {
     color: ColorRGBA;
     animeDuration: int;
+    allowMouseRightToggle: bool;
     duringConfig: bool;
     private text;
     private duringAnimation;
@@ -14,8 +15,9 @@ export declare class AmazingTextUI {
      * @param defaultShow - Whether to show the text by default.
      * @param animeDuration - The duration of the animation.
      * @param color - The color of the text.
+     * @param allowMouseRightToggle - Whether to allow toggling the UI with the mouse right button.
      */
-    constructor(text: string, fontSize: float, offset: Float2, defaultShow: bool, animeDuration: int, color: ColorRGBA);
+    constructor(text: string, fontSize: float, offset: Float2, defaultShow: bool, animeDuration: int, color: ColorRGBA, allowMouseRightToggle: bool);
     private startAnimation;
     /**
      * Sets the text of the UI.
@@ -42,4 +44,3 @@ export declare class AmazingTextUI {
      */
     update(text: string): void;
 }
-export default AmazingTextUI;

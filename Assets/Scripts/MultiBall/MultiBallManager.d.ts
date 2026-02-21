@@ -1,9 +1,10 @@
 import { Float3 } from "gameApi";
-import Manager from "Scripts/Manager/Manager.js";
+import Manager from "Scripts/UtilClass/Manager.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
+import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import { type Status } from "Scripts/MultiBall/Utils.js";
 import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
-import type { Key, Trans, SwitchBallKeys, MultiBallMessage } from "multiBall:message";
+import type { Trans, SwitchBallKeys, MultiBallMessage } from "multiBall:message";
 type NeededEvents = [
     "OnStartLevel",
     "OnTimerActive",
@@ -17,18 +18,8 @@ type NeededEvents = [
     "OnPostDestinationReached"
 ];
 type E = RegisterEvents<NeededEvents>;
-declare class MultiBallManager extends Manager<MultiBallMessage> {
-    /**
-     * The keys to switch balls.
-     * The first key is for `Four Direction` view mode,
-     * and the second key is for `Free Look` and `First Person` view mode.
-     */
-    switchKeys: SwitchBallKeys;
-    /**
-     * The keys to switch balls in current view mode.
-     */
-    get switchKey(): Key;
-    set switchKey(key: Key);
+declare class MultiBallManager extends Manager<MultiBallMessage, "switch" | "ctrl"> {
+    switchKey: CustomKey;
     /**
      * Whether to use the camera ease when switching or appending.
      */
@@ -40,21 +31,26 @@ declare class MultiBallManager extends Manager<MultiBallMessage> {
      * If this value is negative, the camera ease is always used.
      */
     easeDistance: float;
-    /**
-     * Whether switching balls is allowed.
-     */
     get canSwitch(): boolean;
-    /**
-     * - [0]: Lock for built-in system. (whether during normal switching or transferring)
-     * - [1]: Lock for multi ball system. (whether during appending or switching cd)
-     */
+    get tipText(): {
+        switch: {
+            English: string;
+            简体中文: string;
+            日本語: string;
+            Spanish: string;
+            繁體中文: string;
+        };
+        ctrl: {
+            English: string;
+            简体中文: string;
+            日本語: string;
+            Spanish: string;
+            繁體中文: string;
+        };
+    };
     private readonly locks;
     private skinSuffix;
     private sfx;
-    private keyTipUI;
-    private keyTipGuid;
-    private get keyTipText();
-    private get keyTipUIText();
     /**
      * Initializes the multi ball manager.
      * @param switchKeys - The keys to switch balls.
@@ -94,16 +90,7 @@ declare class MultiBallManager extends Manager<MultiBallMessage> {
     get previousBall(): MultiBall | Player;
     private playerAvatar;
     private updateKeyTipUI;
-    private keyConfig;
     private updateAvatarUI;
-    /**
-     * Shows the key tip.
-     */
-    showKeyTip(): void;
-    /**
-     * Hides the key tip.
-     */
-    hideKeyTip(): void;
     /**
      * Resets the multi ball system.
      * @param vfx - Whether to destroy the ball with visual effects or not. Defaults to `true`.

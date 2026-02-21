@@ -1,23 +1,35 @@
 // @ts-nocheck
-import { math, player, console, settings, inputManager, levelManager, Float2, Float3, ColorRGBA, tweenManager, } from "gameApi";
+import { math, player, console, inputManager, levelManager, tweenManager, Float2, Float3, ColorRGBA, } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
-import Manager from "Scripts/Manager/Manager.js";
+import Manager from "Scripts/UtilClass/Manager.js";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
-import AmazingTextUI from "Scripts/Amazing/AmazingTextUIClass.js";
-import { allKeys, isPlayer, isMouseKey, checkKeyDown, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
+import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
+import { isPlayer, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
 class MultiBallManager extends Manager {
-    switchKeys;
-    get switchKey() {
-        return this.switchKeys[levelManager.cameraMode === 0 ? 0 : 1];
-    }
-    set switchKey(key) {
-        this.switchKeys[levelManager.cameraMode === 0 ? 0 : 1] = key;
-    }
+    switchKey;
     cameraEase;
     easeDistance;
     get canSwitch() {
-        return !this.keyTipUI.duringConfig && this.locks.every(lock => !lock);
+        return this.locks.every(lock => !lock);
+    }
+    get tipText() {
+        return {
+            switch: {
+                English: `When multiple balls appear in the status bar, you can use the ${this.switchKey.key} key to switch between them.`,
+                简体中文: `当状态栏有多个球出现时，你可以使用${this.switchKey.key}键进行切换。`,
+                日本語: `ステ一タスバ一に複数のボ一ルが表示された場合、${this.switchKey.key}キ一で切り替えることができます。`,
+                Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${this.switchKey.key} para cambiar de una a otra.`,
+                繁體中文: `當狀態列有多個球出現時，你可以使用${this.switchKey.key}鍵進行切換。`,
+            },
+            ctrl: {
+                English: "Hold Left Ctrl to switch in reverse order.",
+                简体中文: "按住左Ctrl键逆序切换。",
+                日本語: "左Ctrlキを押し続けて逆順に切り替えます。",
+                Spanish: "Mantén pulsado el Ctrl izquierdo para cambiar de una a otra en orden inverso.",
+                繁體中文: "按住左Ctrl鍵逆序切換。",
+            },
+        };
     }
     locks = [
         false,
@@ -25,30 +37,11 @@ class MultiBallManager extends Manager {
     ];
     skinSuffix = ["", "Mush"][levelManager.skin];
     sfx;
-    keyTipUI;
-    keyTipGuid = null;
-    get keyTipText() {
-        return {
-            English: `When multiple balls appear in the status bar, you can use the ${this.keyTipUIText} key to switch between them.`,
-            简体中文: `当状态栏有多个球出现时，你可以使用${this.keyTipUIText}键进行切换。`,
-            日本語: `ステ一タスバ一に複数のボ一ルが表示された場合、${this.keyTipUIText}キ一で切り替えることができます。`,
-            Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${this.keyTipUIText} para cambiar de una a otra.`,
-            繁體中文: `當狀態列有多個球出現時，你可以使用${this.keyTipUIText}鍵進行切換。`,
-        }[settings.language];
-    }
-    get keyTipUIText() {
-        const key = this.switchKey;
-        const prefix = isMouseKey(key) ? "MOUSE" : "";
-        return this.keyTipUI?.duringConfig
-            ? "[ . . . ]"
-            : `${prefix} ${key.toUpperCase()}`;
-    }
     init(switchKeys, cameraEase, easeDistance, sfxAppendEnd, sfxSwitch) {
-        this.switchKeys = switchKeys;
+        this.switchKey = new CustomKey("", switchKeys, false, 21, new Float2(0.5, 0.915), false, 1, new ColorRGBA(1, 1, 1, 1), false);
         this.cameraEase = cameraEase;
         this.easeDistance = easeDistance;
         this.sfx = { appendEnd: sfxAppendEnd, switch: sfxSwitch };
-        this.keyTipUI = new AmazingTextUI(this.keyTipUIText, 21, new Float2(0.5, 0.915), false, 1, new ColorRGBA(1, 1, 1, 1));
     }
     balls = [player];
     platformTrans = [];
@@ -69,25 +62,11 @@ class MultiBallManager extends Manager {
     }
     playerAvatar = new Avatar(`Textures/Balls/${player.ballType}.tex`);
     updateKeyTipUI() {
-        const text = this.keyTipUIText;
-        if (this.balls.length > 1) {
-            this.keyTipUI.show(text);
-        }
-        else {
-            this.keyTipUI.hide();
-        }
-        this.keyTipUI.update(text);
-    }
-    keyConfig() {
-        if (this.keyTipUI.duringConfig) {
-            for (const key of allKeys) {
-                if (checkKeyDown(key)) {
-                    this.switchKey = key;
-                    this.keyTipUI.duringConfig = false;
-                    this.balls;
-                }
-            }
-        }
+        if (this.balls.length > 1)
+            this.switchKey.showUI();
+        else
+            this.switchKey.hideUI();
+        this.switchKey.update();
     }
     updateAvatarUI() {
         const enabled = this.balls.length > 1;
@@ -109,17 +88,6 @@ class MultiBallManager extends Manager {
             }
             avatar.update(enabled, chosen, durability, (i - (this.balls.length - 1) / 2) * 52.5);
         }
-    }
-    showKeyTip() {
-        if (this.keyTipGuid)
-            return;
-        this.keyTipGuid = levelManager.showTip(this.keyTipText);
-    }
-    hideKeyTip() {
-        if (!this.keyTipGuid)
-            return;
-        levelManager.hideTip(this.keyTipGuid);
-        this.keyTipGuid = null;
     }
     reset(vfx) {
         vfx ??= true;
@@ -155,16 +123,10 @@ class MultiBallManager extends Manager {
         this.sfx.appendEnd.play();
         levelManager.spawnVfxPRS("TransportEnd", platformPos, platformRot, new Float3(1, 1, 1));
         this.locks[1] = false;
-        levelManager.sendCustomEvent({
-            _brand: this.messageSymbol,
-            OnPostMultiBallAppendEnd: { ballType },
-        });
+        this.sendEvent("OnPostMultiBallAppendEnd", { ballType });
     }
     startAppend(ballType, appenderTrans, audioPlayer) {
-        levelManager.sendCustomEvent({
-            _brand: this.messageSymbol,
-            OnPreMultiBallAppendStart: { ballType },
-        });
+        this.sendEvent("OnPreMultiBallAppendStart", { ballType });
         if (this.canceledEvents.has("OnPreMultiBallAppendStart"))
             return;
         this.locks[1] = true;
@@ -185,10 +147,7 @@ class MultiBallManager extends Manager {
             player.physicsObject.setVelocity(mathEx.scaleFloat3(mathEx.subFloat3(playerTargetPos, player.position), 5), mathEx.getAngularVelocityToUnit(player.rotationQuaternion));
         }, () => {
             this.locks[1] = false;
-            levelManager.sendCustomEvent({
-                _brand: this.messageSymbol,
-                OnPreMultiBallAppendEnd: { ballType },
-            });
+            this.sendEvent("OnPreMultiBallAppendEnd", { ballType });
             if (this.canceledEvents.has("OnPreMultiBallAppendEnd"))
                 return;
             this.appendBall(ballType, appenderPos);
@@ -245,17 +204,11 @@ class MultiBallManager extends Manager {
         index ??= this.nextIndex;
         if (!this.canSwitch)
             return;
-        levelManager.sendCustomEvent({
-            _brand: this.messageSymbol,
-            OnPreMultiBallSwitch: {},
-        });
+        this.sendEvent("OnPreMultiBallSwitch", { index });
         if (this.canceledEvents.has("OnPreMultiBallSwitch"))
             return;
         this.forceSwitchBall(index);
-        levelManager.sendCustomEvent({
-            _brand: this.messageSymbol,
-            OnPostMultiBallSwitch: {},
-        });
+        this.sendEvent("OnPostMultiBallSwitch", { index });
     }
     removeBall(indexes, vfx) {
         vfx ??= true;
@@ -303,7 +256,6 @@ class MultiBallManager extends Manager {
     }
     updateUI() {
         this.updateAvatarUI();
-        this.keyConfig();
         this.updateKeyTipUI();
     }
     updateBalls() {
@@ -336,11 +288,11 @@ class MultiBallManager extends Manager {
         if (OnPhysicsUpdate) {
             if (!levelManager.timerEnabled)
                 return;
-            this.updateBalls();
-            if (checkKeyDown(this.switchKey))
+            if (this.switchKey.checkDown())
                 this.switchBall(inputManager.keyboard.checkKeyHold("LeftCtrl")
                     ? this.previousIndex
                     : this.nextIndex);
+            this.updateBalls();
             this.updateUI();
         }
         this.canceledEvents.clear();
