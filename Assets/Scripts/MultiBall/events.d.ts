@@ -1,6 +1,6 @@
 // Install [BST](https://github.com/Withered-Flower-0422/BST) to get type hints.
 
-declare module "multiBall:message" {
+declare module "multiBall:events" {
     import { Float3 } from "gameApi"
     import { BallType, KeyboardKey, MouseButton } from "game:alias"
 
@@ -11,7 +11,7 @@ declare module "multiBall:message" {
     export type AppendData = { ballType: BallType }
     export type SwitchData = { index: int }
 
-    export type MultiBallMessage = {
+    export type MultiBallEvents = {
         readonly _brand: symbol
 
         OnPreMultiBallAppendStart?: AppendData

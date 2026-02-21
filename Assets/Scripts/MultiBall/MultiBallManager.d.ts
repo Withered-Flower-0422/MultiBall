@@ -4,7 +4,7 @@ import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import { type Status } from "Scripts/MultiBall/Utils.js";
 import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
-import type { Trans, SwitchBallKeys, MultiBallMessage } from "multiBall:message";
+import type { Trans, SwitchBallKeys, MultiBallEvents } from "multiBall:events";
 type NeededEvents = [
     "OnStartLevel",
     "OnTimerActive",
@@ -18,7 +18,7 @@ type NeededEvents = [
     "OnPostDestinationReached"
 ];
 type E = RegisterEvents<NeededEvents>;
-declare class MultiBallManager extends Manager<MultiBallMessage, "switch" | "ctrl"> {
+declare class MultiBallManager extends Manager<MultiBallEvents, "switch" | "ctrl"> {
     switchKey: CustomKey;
     /**
      * Whether to use the camera ease when switching or appending.
