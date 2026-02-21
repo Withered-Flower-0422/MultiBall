@@ -1,9 +1,9 @@
 import { settings } from "gameApi";
 import type { Events as E } from "game:alias";
 export default abstract class Manager<Events extends {
-    _brand: symbol;
+    readonly _brand: symbol;
 } = {
-    _brand: symbol;
+    readonly _brand: symbol;
 }, TipKey extends string = never> {
     protected readonly eventSymbol: symbol;
     protected canceledEvents: Set<keyof Events & `OnPre${string}`>;
