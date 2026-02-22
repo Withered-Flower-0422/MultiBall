@@ -38,15 +38,15 @@ MultiBall patch for Ballex².
 
 </details>
 
-## Config
+## Configuration
 
 ### MultiBall
 
-| Variable Name    | Type       | Description                                                                                                                                                                                                                                                                                                                                          |
-| ---------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `switchBallKeys` | `string[]` | The keys to switch the ball. There are two strings in the array. The first is the key to switch the ball when in _Four Direction View Mode_, and the second is the key to switch the ball when in _Free View Mode_ or _First Person View Mode_.                                                                                                      |
-| `cameraEase`     | `bool`     | How the camera moves when switching the ball. If set to `true`, the camera will follow the ball smoothly. If set to `false`, the camera will jump to the ball's position.                                                                                                                                                                            |
-| `easeDistance`   | `float`    | This works only when `cameraEase` is set to `true`. Only when the distance between the start switching position and the target position is less than this value, the camera will follow the ball smoothly. Otherwise, the camera will jump to the target position. If the value is set to negative, the camera will always follow the ball smoothly. |
+| Variable Name    | Type         | Description                                                                                                                                                                                                                                                                                                                                          |
+| ---------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `switchBallKeys` | `[Key, Key]` | The keys to switch the ball. There are two strings in the array. The first is the key to switch the ball when in _Four Direction View Mode_, and the second is the key to switch the ball when in _Free View Mode_ or _First Person View Mode_.                                                                                                      |
+| `cameraEase`     | `bool`       | How the camera moves when switching the ball. If set to `true`, the camera will follow the ball smoothly. If set to `false`, the camera will jump to the ball's position.                                                                                                                                                                            |
+| `easeDistance`   | `float`      | This works only when `cameraEase` is set to `true`. Only when the distance between the start switching position and the target position is less than this value, the camera will follow the ball smoothly. Otherwise, the camera will jump to the target position. If the value is set to negative, the camera will always follow the ball smoothly. |
 
 ### MultiBallTip
 
