@@ -1,9 +1,12 @@
 import { settings } from "gameApi";
 import type { Events as E } from "game:alias";
-export default abstract class Manager<Events extends Record<`On${string}`, object> = {}, TipKey extends string = never> {
+type AssertEvents<T> = {
+    [K in keyof T]: K extends `On${string}` ? T[K] extends object | undefined ? T[K] : never : never;
+};
+export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never> {
     protected readonly eventSymbol: symbol;
     protected canceledEvents: Set<keyof Events & `OnPre${string}`>;
-    protected sendEvent<T extends keyof Events>(name: T, data: Events[T]): void;
+    protected sendEvent<T extends keyof Events>(name: T, data: NonNullable<Events[T]>): void;
     /**
      * Checks whether the given object is an event of this manager.
      * @param e - The object to check.
@@ -33,3 +36,4 @@ export default abstract class Manager<Events extends Record<`On${string}`, objec
      */
     abstract update(e: E): void;
 }
+export {};
