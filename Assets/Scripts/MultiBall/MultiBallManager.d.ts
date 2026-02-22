@@ -4,8 +4,14 @@ import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import Manager, { type E } from "Scripts/UtilClass/Manager.js";
 import { type Status } from "Scripts/MultiBall/Utils.js";
 import type { Player, BallType, AudioPlayer } from "game:alias";
-import type { Trans, SwitchBallKeys, MultiBallEvents } from "multiBall:events";
-declare class MultiBallManager extends Manager<MultiBallEvents, "switch" | "ctrl"> {
+import type { Trans, SwitchBallKeys, AppendData, SwitchData } from "Scripts/MultiBall/MultiBallType.js";
+declare class MultiBallManager extends Manager<{
+    OnPreMultiBallAppendStart?: AppendData;
+    OnPreMultiBallAppendEnd?: AppendData;
+    OnPostMultiBallAppendEnd?: AppendData;
+    OnPreMultiBallSwitch?: SwitchData;
+    OnPostMultiBallSwitch?: SwitchData;
+}, "switch" | "ctrl"> {
     switchKey: CustomKey;
     /**
      * Whether to use the camera ease when switching or appending.
