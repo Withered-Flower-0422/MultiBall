@@ -12,8 +12,6 @@ declare module "multiBall:events" {
     export type SwitchData = { index: int }
 
     export type MultiBallEvents = {
-        readonly _brand: symbol
-
         OnPreMultiBallAppendStart?: AppendData
         OnPreMultiBallAppendEnd?: AppendData
         OnPostMultiBallAppendEnd?: AppendData

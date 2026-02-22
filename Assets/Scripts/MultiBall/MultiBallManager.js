@@ -119,7 +119,7 @@ class MultiBallManager extends Manager {
             new Float3(0, 0, 0),
             new Float3(1, 1, 1),
         ], [new Float3(0, 0, 0), new Float3(0, 0, 0)]);
-        this.forceSwitchBall(this.balls.length - 1);
+        this.forceSwitchBall(this.balls.length - 1, false);
         this.sfx.appendEnd.play();
         levelManager.spawnVfxPRS("TransportEnd", platformPos, platformRot, new Float3(1, 1, 1));
         this.locks[1] = false;
@@ -154,8 +154,9 @@ class MultiBallManager extends Manager {
         })
             .play();
     }
-    forceSwitchBall(index) {
+    forceSwitchBall(index, sfx) {
         index ??= this.nextIndex;
+        sfx ??= true;
         const curIndex = this.currentIndex;
         if (index === curIndex)
             return;
@@ -196,7 +197,8 @@ class MultiBallManager extends Manager {
             playerRot,
             new Float3(playerStatus.scale, playerStatus.scale, playerStatus.scale),
         ], [playerLinearVelocity, playerAngularVelocity]);
-        this.sfx.switch.play();
+        if (sfx)
+            this.sfx.switch.play();
         this.locks[1] = true;
         levelManager.invoke(() => (this.locks[1] = false), 10);
     }

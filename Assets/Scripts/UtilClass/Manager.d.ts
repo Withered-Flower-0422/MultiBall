@@ -1,13 +1,9 @@
 import { settings } from "gameApi";
 import type { Events as E } from "game:alias";
-export default abstract class Manager<Events extends {
-    readonly _brand: symbol;
-} = {
-    readonly _brand: symbol;
-}, TipKey extends string = never> {
+export default abstract class Manager<Events extends Record<`On${string}`, object> = {}, TipKey extends string = never> {
     protected readonly eventSymbol: symbol;
     protected canceledEvents: Set<keyof Events & `OnPre${string}`>;
-    protected sendEvent<T extends Exclude<keyof Events, "_brand">>(name: T, data: Events[T]): void;
+    protected sendEvent<T extends keyof Events>(name: T, data: Events[T]): void;
     /**
      * Checks whether the given object is an event of this manager.
      * @param e - The object to check.

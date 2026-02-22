@@ -4,12 +4,13 @@ export default class Manager {
     eventSymbol = Symbol();
     canceledEvents = new Set();
     sendEvent(name, data) {
-        const event = { _brand: this.eventSymbol };
+        const event = {};
+        event[this.eventSymbol] = true;
         event[name] = data;
         levelManager.sendCustomEvent(event);
     }
     isSelfEvent(e) {
-        return e?._brand === this.eventSymbol;
+        return this.eventSymbol in e;
     }
     cancelEvent(event) {
         this.canceledEvents.add(event);
