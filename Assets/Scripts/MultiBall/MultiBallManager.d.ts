@@ -1,9 +1,9 @@
 import { Float3 } from "gameApi";
-import Manager from "Scripts/UtilClass/Manager.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
+import Manager, { type E } from "Scripts/UtilClass/Manager.js";
 import { type Status } from "Scripts/MultiBall/Utils.js";
-import type { Player, BallType, AudioPlayer, Events as E } from "game:alias";
+import type { Player, BallType, AudioPlayer } from "game:alias";
 import type { Trans, SwitchBallKeys, MultiBallEvents } from "multiBall:events";
 declare class MultiBallManager extends Manager<MultiBallEvents, "switch" | "ctrl"> {
     switchKey: CustomKey;

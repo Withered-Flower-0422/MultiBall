@@ -1,5 +1,6 @@
 import { settings } from "gameApi";
-import type { Events as E } from "game:alias";
+import type { Events as BuiltinEvents } from "game:alias";
+export type E = Omit<BuiltinEvents, "OnReceiveCustomEvent">;
 type AssertEvents<T> = {
     [K in keyof T]: K extends `On${string}` ? T[K] extends object | undefined ? T[K] : never : never;
 };

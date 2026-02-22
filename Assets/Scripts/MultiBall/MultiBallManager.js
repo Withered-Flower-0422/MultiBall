@@ -1,10 +1,10 @@
 // @ts-nocheck
 import { math, player, console, inputManager, levelManager, tweenManager, Float2, Float3, ColorRGBA, } from "gameApi";
 import mathEx from "Scripts/Utility/mathEx.js";
-import Manager from "Scripts/UtilClass/Manager.js";
 import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
+import Manager from "Scripts/UtilClass/Manager.js";
 import { isPlayer, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
 class MultiBallManager extends Manager {
     switchKey;
