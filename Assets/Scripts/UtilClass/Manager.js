@@ -10,12 +10,16 @@ export default class Manager {
         levelManager.sendCustomEvent(event);
     }
     isSelfEvent(e) {
-        return this.eventSymbol in e;
+        return e?.[this.eventSymbol] === true;
     }
     cancelEvent(event) {
         this.canceledEvents.add(event);
     }
     showTip(tipKey, duration) {
         levelManager.hideTipDelay(levelManager.showTip(this.tipText[tipKey][settings.language]), duration);
+    }
+    update(e) {
+        this.onEvents(e);
+        this.canceledEvents.clear();
     }
 }

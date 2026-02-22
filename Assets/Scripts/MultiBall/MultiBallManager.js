@@ -264,7 +264,7 @@ class MultiBallManager extends Manager {
         this.removeDestroyedBalls();
         this.removeBallsWithSameTypeAsPlayer();
     }
-    update({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }) {
+    onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }) {
         if (OnPreSwitchBallStart || OnPreTransferBallStart) {
             if (this.locks[1]) {
                 levelManager.cancelEvent("OnPreSwitchBallStart");
@@ -297,7 +297,6 @@ class MultiBallManager extends Manager {
             this.updateBalls();
             this.updateUI();
         }
-        this.canceledEvents.clear();
     }
 }
 export const multiBallManager = createSingleton(MultiBallManager);

@@ -30,10 +30,11 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
      * @param args - The arguments to initialize the manager.
      */
     abstract init(...args: any[]): void;
+    protected abstract onEvents(e: E): void;
     /**
      * Updates the manager.
      * @param e - The event data.
      */
-    abstract update(e: E): void;
+    update(e: E): void;
 }
 export {};

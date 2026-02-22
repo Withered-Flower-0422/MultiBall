@@ -3,21 +3,8 @@ import Manager from "Scripts/UtilClass/Manager.js";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import { type Status } from "Scripts/MultiBall/Utils.js";
-import type { Player, BallType, AudioPlayer, RegisterEvents } from "game:alias";
+import type { Player, BallType, AudioPlayer, Events as E } from "game:alias";
 import type { Trans, SwitchBallKeys, MultiBallEvents } from "multiBall:events";
-type NeededEvents = [
-    "OnStartLevel",
-    "OnTimerActive",
-    "OnPhysicsUpdate",
-    "OnPlayerDeadEnd",
-    "OnPostSwitchBallEnd",
-    "OnPreSwitchBallStart",
-    "OnPostTransferBallEnd",
-    "OnPreTransferBallStart",
-    "OnPostCheckpointReached",
-    "OnPostDestinationReached"
-];
-type E = RegisterEvents<NeededEvents>;
 declare class MultiBallManager extends Manager<MultiBallEvents, "switch" | "ctrl"> {
     switchKey: CustomKey;
     /**
@@ -141,11 +128,7 @@ declare class MultiBallManager extends Manager<MultiBallEvents, "switch" | "ctrl
     private getClosetPlatformTrans;
     private updateUI;
     private updateBalls;
-    /**
-     * Updates the multi ball system.
-     * @param e - The event data. See {@link NeededEvents | needed events}.
-     */
-    update({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached }: E): void;
+    protected onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached }: E): void;
 }
 export declare const multiBallManager: MultiBallManager;
 export default multiBallManager;
