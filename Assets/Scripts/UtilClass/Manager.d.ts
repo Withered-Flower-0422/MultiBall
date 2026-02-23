@@ -1,10 +1,11 @@
 import { settings } from "gameApi";
-import type { Events as BuiltinEvents } from "game:alias";
+import type { Events as BuiltinEvents, Item } from "game:alias";
 type AssertEvents<T> = {
     [K in keyof T]: K extends `On${string}` ? T[K] extends object | undefined ? T[K] : never : never;
 };
 /** A type that gets the events of a manager. */
 export type ManagerEvents<M extends Manager<any, any>> = M extends Manager<infer E, any> ? E : never;
+export type OnCustomEvents<M extends Manager<any, any>> = (self: Item, events: ManagerEvents<M>) => void;
 export type E = Omit<BuiltinEvents, "OnReceiveCustomEvent">;
 export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never> {
     protected readonly eventSymbol: symbol;
