@@ -11,8 +11,10 @@ declare class MultiBallManager extends Manager<{
     OnPostMultiBallAppendEnd?: AppendData;
     OnPreMultiBallSwitch?: SwitchData;
     OnPostMultiBallSwitch?: SwitchData;
-}, "switch" | "ctrl"> {
-    switchKey: CustomKey;
+}, "switch" | "ctrl", "switch"> {
+    protected enable(): void;
+    protected disable(): void;
+    keys: Record<"switch", CustomKey>;
     /**
      * Whether to use the camera ease when switching or appending.
      */

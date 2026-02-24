@@ -7,7 +7,12 @@ import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import Manager from "Scripts/UtilClass/Manager.js";
 import { isPlayer, defaultStatus, createSingleton, getStatusFromPlayer, } from "Scripts/MultiBall/Utils.js";
 class MultiBallManager extends Manager {
-    switchKey;
+    enable() { }
+    disable() {
+        this.reset(false);
+        this.updateUI();
+    }
+    keys;
     cameraEase;
     easeDistance;
     get canSwitch() {
@@ -16,11 +21,11 @@ class MultiBallManager extends Manager {
     get tipText() {
         return {
             switch: {
-                English: `When multiple balls appear in the status bar, you can use the ${this.switchKey.key} key to switch between them.`,
-                简体中文: `当状态栏有多个球出现时，你可以使用${this.switchKey.key}键进行切换。`,
-                日本語: `ステ一タスバ一に複数のボ一ルが表示された場合、${this.switchKey.key}キ一で切り替えることができます。`,
-                Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${this.switchKey.key} para cambiar de una a otra.`,
-                繁體中文: `當狀態列有多個球出現時，你可以使用${this.switchKey.key}鍵進行切換。`,
+                English: `When multiple balls appear in the status bar, you can use the ${this.keys.switch.key} key to switch between them.`,
+                简体中文: `当状态栏有多个球出现时，你可以使用${this.keys.switch.key}键进行切换。`,
+                日本語: `ステ一タスバ一に複数のボ一ルが表示された場合、${this.keys.switch.key}キ一で切り替えることができます。`,
+                Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${this.keys.switch.key} para cambiar de una a otra.`,
+                繁體中文: `當狀態列有多個球出現時，你可以使用${this.keys.switch.key}鍵進行切換。`,
             },
             ctrl: {
                 English: "Hold Left Ctrl to switch in reverse order.",
@@ -38,7 +43,9 @@ class MultiBallManager extends Manager {
     skinSuffix = ["", "Mush"][levelManager.skin];
     sfx;
     init(switchKeys, cameraEase, easeDistance, sfxAppendEnd, sfxSwitch) {
-        this.switchKey = new CustomKey("", switchKeys, false, 21, new Float2(0.5, 0.915), false, 1, new ColorRGBA(1, 1, 1, 1), false);
+        this.keys = {
+            switch: new CustomKey("", switchKeys, false, 21, new Float2(0.5, 0.915), false, 1, new ColorRGBA(1, 1, 1, 1), false),
+        };
         this.cameraEase = cameraEase;
         this.easeDistance = easeDistance;
         this.sfx = { appendEnd: sfxAppendEnd, switch: sfxSwitch };
@@ -63,10 +70,9 @@ class MultiBallManager extends Manager {
     playerAvatar = new Avatar(`Textures/Balls/${player.ballType}.tex`);
     updateKeyTipUI() {
         if (this.balls.length > 1)
-            this.switchKey.showUI();
+            this.keys.switch.showUI();
         else
-            this.switchKey.hideUI();
-        this.switchKey.update();
+            this.keys.switch.hideUI();
     }
     updateAvatarUI() {
         const enabled = this.balls.length > 1;
@@ -108,6 +114,8 @@ class MultiBallManager extends Manager {
             this.balls.splice(index, 0, newBall);
     }
     appendBall(ballType, appenderPos) {
+        if (!this.enabled)
+            return;
         const platformTrans = this.getClosetPlatformTrans(appenderPos);
         if (!platformTrans) {
             console.error("No Append Platform found in the map.");
@@ -290,7 +298,7 @@ class MultiBallManager extends Manager {
         if (OnPhysicsUpdate) {
             if (!levelManager.timerEnabled)
                 return;
-            if (this.switchKey.checkDown())
+            if (this.keys.switch.checkDown())
                 this.switchBall(inputManager.keyboard.checkKeyHold("LeftCtrl")
                     ? this.previousIndex
                     : this.nextIndex);

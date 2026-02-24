@@ -1,5 +1,6 @@
 import { settings } from "gameApi";
 import type { Events as BuiltinEvents, Item } from "game:alias";
+import type CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 type AssertEvents<T> = {
     [K in keyof T]: K extends `On${string}` ? T[K] extends object | undefined ? T[K] : never : never;
 };
@@ -7,7 +8,7 @@ type AssertEvents<T> = {
 export type ManagerEvents<M extends Manager<any, any>> = M extends Manager<infer E, any> ? E : never;
 export type OnCustomEvents<M extends Manager<any, any>> = (self: Item, events: ManagerEvents<M>) => void;
 export type E = Omit<BuiltinEvents, "OnReceiveCustomEvent">;
-export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never> {
+export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never, CustomKeyName extends string = never> {
     protected readonly eventSymbol: symbol;
     protected canceledEvents: Set<keyof Events & `OnPre${string}`>;
     protected sendEvent<T extends keyof Events>(name: T, data: NonNullable<Events[T]>): void;
@@ -29,6 +30,13 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
      * @param duration - The duration of the tip in frames.
      */
     showTip(tipKey: TipKey, duration: int): void;
+    /** Custom keys of this manager. */
+    abstract keys: Record<CustomKeyName, CustomKey>;
+    protected abstract enable(): void;
+    protected abstract disable(): void;
+    protected _enabled: boolean;
+    get enabled(): boolean;
+    set enabled(value: boolean);
     /**
      * Initializes the manager.
      * @param args - The arguments to initialize the manager.

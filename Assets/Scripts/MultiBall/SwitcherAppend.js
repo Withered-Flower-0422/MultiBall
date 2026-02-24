@@ -5,6 +5,7 @@ let active = true;
 export const init = (self, v) => Object.assign(globalThis, v);
 export const onTrigger = (self, triggeredItem, type) => {
     if (!active ||
+        !multiBallManager.enabled ||
         !levelManager.timerEnabled ||
         triggeredItem.guid !== player.guid ||
         player.ballType === switchBallType)
