@@ -2,7 +2,6 @@ import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import Manager, { type E } from "Scripts/UtilClass/Manager.js";
-import { type Status } from "Scripts/MultiBall/Utils.js";
 import type { Player, BallType, AudioPlayer } from "game:alias";
 import type { Trans, SwitchBallKeys, AppendData, SwitchData } from "Scripts/MultiBall/MultiBallType.js";
 declare class MultiBallManager extends Manager<{
@@ -90,7 +89,7 @@ declare class MultiBallManager extends Manager<{
      * Resets the multi ball system.
      * @param vfx - Whether to destroy the ball with visual effects or not. Defaults to `true`.
      */
-    reset(vfx?: bool): void;
+    reset(vfx?: boolean): void;
     /**
      * Adds a new ball to the multi ball system.
      * @param ballType - The type of the ball to add.
@@ -100,7 +99,7 @@ declare class MultiBallManager extends Manager<{
      * @param status - The status of the ball.
      * @param index - The index to add the ball at. Defaults to `undefined` to add it at the end.
      */
-    addBall(ballType: BallType, templateName: string, trans: [pos: Float3, rot: Float3, scl: Float3], velocity: [linear: Float3, angular: Float3], status?: Status, index?: int): void;
+    addBall(ballType: BallType, templateName: string, trans: [pos: Float3, rot: Float3, scl: Float3], velocity: [linear: Float3, angular: Float3], status?: import("Scripts/MultiBall/Utils.js").Status, index?: int): void;
     /**
      * Appends a new ball at the end of the ball list, and switches to it.
      * @param ballType - The type of the ball to append.
@@ -119,13 +118,13 @@ declare class MultiBallManager extends Manager<{
      * Switches to the ball at the given index.
      * @param index - The index of the ball to switch to. Defaults to the next ball.
      */
-    switchBall(index?: int): void;
+    switchBall(index?: number): void;
     /**
      * Removes the balls at the given indexes.
      * @param indexes - The indexes of the balls to remove.
      * @param vfx - Whether to destroy the ball with visual effects or not. Defaults to `true`.
      */
-    removeBall(indexes: int[], vfx?: bool): void;
+    removeBall(indexes: int[], vfx?: boolean): void;
     private removeBallsWithSameTypeAsPlayer;
     private removeDestroyedBalls;
     /**
@@ -136,7 +135,7 @@ declare class MultiBallManager extends Manager<{
     private getClosetPlatformTrans;
     private updateUI;
     private updateBalls;
-    protected onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached }: E): void;
+    protected onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }: E): void;
 }
 export declare const multiBallManager: MultiBallManager;
 export default multiBallManager;

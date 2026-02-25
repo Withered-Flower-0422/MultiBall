@@ -1,23 +1,25 @@
 // @ts-nocheck
 import { player, variables } from "gameApi";
 export const defaultStatus = {
-    durability: 100,
-    temperature: 20,
-    wetness: 0,
-    power: 100,
-    scale: 1,
+  durability: 100,
+  temperature: 20,
+  wetness: 0,
+  power: 100,
+  scale: 1
 };
-export const isPlayer = (obj) => "guid" in obj;
+export const isPlayer = obj => "guid" in obj;
 export const getStatusFromPlayer = () => ({
-    durability: player.durability,
-    temperature: player.temperature,
-    wetness: player.wetness,
-    power: player.power,
-    scale: player.scale,
+  durability: player.durability,
+  temperature: player.temperature,
+  wetness: player.wetness,
+  power: player.power,
+  scale: player.scale
 });
-export const createSingleton = (cls, ...args) => {
-    let instance = variables.get(cls.name);
-    if (!instance)
-        variables.set(cls.name, (instance = new cls(...args)));
-    return instance;
+export const createSingleton = function (cls) {
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+  let instance = variables.get(cls.name);
+  if (!instance) variables.set(cls.name, instance = new cls(...args));
+  return instance;
 };
