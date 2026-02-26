@@ -73,7 +73,7 @@ declare class MultiBallManager extends Manager<{
     /**
      * The next ball instance.
      */
-    get nextBall(): MultiBall | Player;
+    get nextBall(): Player | MultiBall;
     /**
      * The previous ball's index.
      */
@@ -81,7 +81,7 @@ declare class MultiBallManager extends Manager<{
     /**
      * The previous ball instance.
      */
-    get previousBall(): MultiBall | Player;
+    get previousBall(): Player | MultiBall;
     private playerAvatar;
     private updateKeyTipUI;
     private updateAvatarUI;
