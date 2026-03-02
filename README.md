@@ -29,7 +29,7 @@ MultiBall patch for Ballex².
 
 <summary>Not supported yet</summary>
 
-1. Make an custom ball avatar, name it as the ball's name, and [import it into BME Pro HDRP](https://withered-flower-0422.github.io/BMT/en/advanced/assets#import-texture).
+1. Make an custom ball avatar, name it as the ball's name, and [import it into BME Pro HDRP](https://withered-flower-0422.github.io/BMT/en/advanced/assets#import-texture). The imported texture should be in the `Assets/Textures/Balls` folder.
 2. Add the custom ball avatar texture to `Scene Settings → Asset Reference → Textures`.
 3. Create a custom ball [following the guide](https://withered-flower-0422.github.io/BMT/en/advanced/sceneSettings/customBall).
 4. Make two copies of the custom ball template. (See how it does in `Hierarchy → MultiBall → Balls`)
