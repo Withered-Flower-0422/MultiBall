@@ -90,14 +90,14 @@ export default class Manager
 
 
 
-  _enabled = true;
+  #enabled = true;
 
   get enabled() {
-    return this._enabled;
+    return this.#enabled;
   }
 
   set enabled(value) {
-    if (this._enabled === value) return;
+    if (this.#enabled === value) return;
 
     if (value) {
       this.enable();
@@ -108,7 +108,7 @@ export default class Manager
       );
     }
 
-    this._enabled = value;
+    this.#enabled = value;
   }
 
 
@@ -126,7 +126,7 @@ export default class Manager
 
 
   update(e) {
-    if (!this._enabled) return;
+    if (!this.#enabled) return;
     this.onEvents(e);
     if (e.OnStartLevel)
     Object.values(this.keys).forEach((key) =>

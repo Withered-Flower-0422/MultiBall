@@ -9,6 +9,7 @@ export type ManagerEvents<M extends Manager<any, any>> = M extends Manager<infer
 export type OnCustomEvents<M extends Manager<any, any>> = (self: Item, events: ManagerEvents<M>) => void;
 export type E = Omit<BuiltinEvents, "OnReceiveCustomEvent">;
 export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never, CustomKeyName extends string = never> {
+    #private;
     protected readonly eventSymbol: symbol;
     protected canceledEvents: Set<keyof Events & `OnPre${string}`>;
     protected sendEvent<T extends keyof Events>(name: T, data: NonNullable<Events[T]>): void;
@@ -34,7 +35,6 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
     abstract keys: Record<CustomKeyName, CustomKey>;
     protected abstract enable(): void;
     protected abstract disable(): void;
-    protected _enabled: boolean;
     get enabled(): boolean;
     set enabled(value: boolean);
     /**
