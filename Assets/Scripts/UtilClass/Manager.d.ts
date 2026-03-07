@@ -35,8 +35,8 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
     abstract keys: Record<CustomKeyName, CustomKey>;
     protected abstract enable(): void;
     protected abstract disable(): void;
-    get enabled(): boolean;
-    set enabled(value: boolean);
+    get enabled(): bool;
+    set enabled(value: bool);
     /**
      * Initializes the manager.
      * @param args - The arguments to initialize the manager.
