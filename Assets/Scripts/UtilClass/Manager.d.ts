@@ -7,7 +7,9 @@ type AssertEvents<T> = {
 /** A type that gets the events of a manager. */
 export type ManagerEvents<M extends Manager<any, any>> = M extends Manager<infer E, any> ? E : never;
 export type OnCustomEvents<M extends Manager<any, any>> = (self: Item, events: ManagerEvents<M>) => void;
-export type E = Omit<BuiltinEvents, "OnReceiveCustomEvent">;
+export type E = BuiltinEvents & {
+    OnReceiveCustomEvent?: never;
+};
 export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never, CustomKeyName extends string = never> {
     #private;
     protected readonly eventSymbol: symbol;
