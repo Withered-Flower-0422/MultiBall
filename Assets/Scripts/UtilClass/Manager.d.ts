@@ -13,7 +13,7 @@ export type E = BuiltinEvents & {
 export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never, CustomKeyName extends string = never> {
     #private;
     protected readonly eventSymbol: symbol;
-    protected canceledEvents: Set<keyof Events & `OnPre${string}`>;
+    protected readonly canceledEvents: Set<keyof Events & `OnPre${string}`>;
     protected sendEvent<T extends keyof Events>(name: T, data: NonNullable<Events[T]>): void;
     /**
      * Checks whether the given object is an event of this manager.

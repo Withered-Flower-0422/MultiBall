@@ -31,7 +31,9 @@ export default class Manager
 
   eventSymbol = Symbol();
 
-  canceledEvents = new Set();
+  canceledEvents = new Set(
+
+  );
 
   sendEvent(
   name,
