@@ -43,7 +43,7 @@ declare class MultiBallManager extends Manager<{
         };
     };
     private readonly locks;
-    private skinSuffix;
+    private readonly skinSuffix;
     private sfx;
     /**
      * Initializes the multi ball manager.
@@ -73,7 +73,7 @@ declare class MultiBallManager extends Manager<{
     /**
      * The next ball instance.
      */
-    get nextBall(): Player | MultiBall;
+    get nextBall(): MultiBall | Player;
     /**
      * The previous ball's index.
      */
@@ -81,7 +81,7 @@ declare class MultiBallManager extends Manager<{
     /**
      * The previous ball instance.
      */
-    get previousBall(): Player | MultiBall;
+    get previousBall(): MultiBall | Player;
     private playerAvatar;
     private updateKeyTipUI;
     private updateAvatarUI;
