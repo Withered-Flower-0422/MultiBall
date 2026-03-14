@@ -29,7 +29,7 @@ export default class Manager
 {
 
 
-  eventSymbol = Symbol();
+  #eventSymbol = Symbol();
 
   canceledEvents = new Set(
 
@@ -40,7 +40,7 @@ export default class Manager
   data)
   {
     levelManager.sendCustomEvent(_defineProperty(_defineProperty({},
-    this.eventSymbol, true),
+    this.#eventSymbol, true),
     name, data)
     );
   }
@@ -51,7 +51,7 @@ export default class Manager
 
 
   isSelfEvent(e) {
-    return e?.[this.eventSymbol] === true;
+    return e?.[this.#eventSymbol] === true;
   }
 
 
