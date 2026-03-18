@@ -1,6 +1,5 @@
 import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
-import CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import Manager, { type E } from "Scripts/UtilClass/Manager.js";
 import type { Player, BallType, AudioPlayer } from "game:alias";
 import type { Trans, SwitchBallKeys, AppendData, SwitchData } from "Scripts/MultiBall/MultiBallType.js";
@@ -13,7 +12,6 @@ declare class MultiBallManager extends Manager<{
 }, "switch" | "ctrl", "switch"> {
     protected enable(): void;
     protected disable(): void;
-    keys: Record<"switch", CustomKey>;
     /**
      * Whether to use the camera ease when switching or appending.
      */

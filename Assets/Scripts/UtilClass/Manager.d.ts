@@ -14,6 +14,7 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
     #private;
     protected readonly canceledEvents: Set<keyof Events & `OnPre${string}`>;
     protected sendEvent<T extends keyof Events>(name: T, data: NonNullable<Events[T]>): void;
+    protected sendEvents(events: Events): void;
     /**
      * Checks whether the given object is an event of this manager.
      * @param e - The object to check.
@@ -33,7 +34,8 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
      */
     showTip(tipKey: TipKey, duration: int): void;
     /** Custom keys of this manager. */
-    abstract keys: Record<CustomKeyName, CustomKey>;
+    get keys(): Record<CustomKeyName, CustomKey>;
+    protected set keys(keys: Record<CustomKeyName, CustomKey>);
     protected abstract enable(): void;
     protected abstract disable(): void;
     get enabled(): bool;

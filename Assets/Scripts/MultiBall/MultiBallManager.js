@@ -49,8 +49,6 @@ class MultiBallManager extends Manager
 
 
 
-  keys = null;
-
 
 
 
@@ -420,12 +418,12 @@ class MultiBallManager extends Manager
     this.easeDistance)
 
     player.transfer(nextBallPos);
-    Object.assign(player, {
+    Object.assign(player, Object.assign({
       position: nextBallPos,
       ballType: nextBallType,
-      rotation: nextBallRot,
-      ...nextBallStatus
-    });
+      rotation: nextBallRot },
+    nextBallStatus)
+    );
 
 
     this.balls[curIndex] = nextBall;
