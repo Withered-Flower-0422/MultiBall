@@ -1,6 +1,7 @@
 import { settings } from "gameApi";
 import type { Events as BuiltinEvents, Item } from "game:alias";
 import type CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
+import type { AssertNonNegInt } from "utils";
 type AssertEvents<T> = {
     [K in keyof T]: K extends `On${string}` ? T[K] extends object | undefined ? T[K] : never : never;
 };
@@ -32,7 +33,7 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
      * @param tipKey - The key of the tip to show.
      * @param duration - The duration of the tip in frames.
      */
-    showTip(tipKey: TipKey, duration: int): void;
+    showTip<I extends int>(tipKey: TipKey, duration: AssertNonNegInt<I>): void;
     /** Custom keys of this manager. */
     get keys(): Record<CustomKeyName, CustomKey>;
     protected set keys(value: Record<CustomKeyName, CustomKey>);

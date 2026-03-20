@@ -22,6 +22,7 @@ import { levelManager, settings } from "gameApi";
 
 
 
+
 export default class Manager
 
 
