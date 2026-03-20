@@ -35,7 +35,7 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
     showTip(tipKey: TipKey, duration: int): void;
     /** Custom keys of this manager. */
     get keys(): Record<CustomKeyName, CustomKey>;
-    protected set keys(keys: Record<CustomKeyName, CustomKey>);
+    protected set keys(value: Record<CustomKeyName, CustomKey>);
     protected abstract enable(): void;
     protected abstract disable(): void;
     get enabled(): bool;

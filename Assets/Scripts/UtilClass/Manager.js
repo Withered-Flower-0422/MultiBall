@@ -99,8 +99,8 @@ export default class Manager
     return this.#keys;
   }
 
-  set keys(keys) {
-    this.#keys = keys;
+  set keys(value) {
+    this.#keys = value;
   }
 
 
