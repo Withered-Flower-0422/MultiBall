@@ -2,16 +2,15 @@ import { settings } from "gameApi";
 import type { Events as BuiltinEvents, Item } from "game:alias";
 import type CustomKey from "Scripts/UtilClass/CustomKeyClass.js";
 import type { AssertNonNegInt } from "utils";
-type AssertEvents<T> = {
-    [K in keyof T]: K extends `On${string}` ? T[K] extends object | undefined ? T[K] : never : never;
-};
 /** A type that gets the events of a manager. */
-export type ManagerEvents<M extends Manager<any, any>> = M extends Manager<infer E, any> ? E : never;
-export type OnCustomEvents<M extends Manager<any, any>> = (self: Item, events: ManagerEvents<M>) => void;
+export type ManagerEvents<M extends Manager<any, any, any>> = M extends Manager<infer E, any, any> ? E : never;
+export type OnCustomEvents<M extends Manager<any, any, any>> = (self: Item, events: ManagerEvents<M>) => void;
 export type E = BuiltinEvents & {
     OnReceiveCustomEvent?: never;
 };
-export default abstract class Manager<Events extends AssertEvents<Events> = {}, TipKey extends string = never, CustomKeyName extends string = never> {
+export default abstract class Manager<Events extends object & {
+    [K in keyof Events]: K extends `On${string}` ? object : never;
+} = {}, TipKey extends string = never, CustomKeyName extends string = never> {
     #private;
     protected readonly canceledEvents: Set<keyof Events & `OnPre${string}`>;
     protected sendEvent<T extends keyof Events>(name: T, data: NonNullable<Events[T]>): void;
@@ -53,4 +52,3 @@ export default abstract class Manager<Events extends AssertEvents<Events> = {}, 
      */
     update(e: E): void;
 }
-export {};

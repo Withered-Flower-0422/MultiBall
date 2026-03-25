@@ -15,15 +15,9 @@ import { levelManager, settings } from "gameApi";
 
 
 
-
-
-
-
-
-
-
-
 export default class Manager
+
+
 
 
 
@@ -95,7 +89,8 @@ export default class Manager
 
 
   get keys() {
-    if (!this.#keys) throw new Error("Custom keys are not initialized.");
+    if (!this.#keys)
+    throw new ReferenceError("Custom keys are not initialized.");
 
     return this.#keys;
   }
