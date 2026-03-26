@@ -67,13 +67,15 @@ class MultiBallManager extends Manager
   }
 
   get tipText() {
+    const key = this.keys.switch.key;
+
     return {
       switch: {
-        English: `When multiple balls appear in the status bar, you can use the ${this.keys.switch.key} key to switch between them.`,
-        简体中文: `当状态栏有多个球出现时，你可以使用${this.keys.switch.key}键进行切换。`,
-        日本語: `ステ一タスバ一に複数のボ一ルが表示された場合、${this.keys.switch.key}キ一で切り替えることができます。`,
-        Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${this.keys.switch.key} para cambiar de una a otra.`,
-        繁體中文: `當狀態列有多個球出現時，你可以使用${this.keys.switch.key}鍵進行切換。`
+        English: `When multiple balls appear in the status bar, you can use the ${key} key to switch between them.`,
+        简体中文: `当状态栏有多个球出现时，你可以使用${key}键进行切换。`,
+        日本語: `ステ一タスバ一に複数のボ一ルが表示された場合、${key}キ一で切り替えることができます。`,
+        Spanish: `Cuando aparece más de una bola en la barra de estado, puedes utilizar la tecla ${key} para cambiar de una a otra.`,
+        繁體中文: `當狀態列有多個球出現時，你可以使用${key}鍵進行切換。`
       },
       ctrl: {
         English: "Hold Left Ctrl to switch in reverse order.",
@@ -126,6 +128,12 @@ class MultiBallManager extends Manager
     this.sfx = { appendEnd: sfxAppendEnd, switch: sfxSwitch };
   }
 
+
+
+
+
+
+  allowSameBallType = false;
 
 
 
@@ -472,25 +480,33 @@ class MultiBallManager extends Manager
 
 
   removeBall(indexes) {let vfx = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    if (!indexes.length) return;
+
     for (const index of indexes) {
       const ball = this.balls[index];
-      if (ball && !isPlayer(ball)) {
-        ball.destroy(vfx);
-      }
+      if (ball && !isPlayer(ball)) ball.destroy(vfx);
     }
     this.balls = this.balls.filter((_, i) => !indexes.includes(i));
   }
 
-  removeBallsWithSameTypeAsPlayer() {
+  removeBallsWithSameType() {
     const indexesToRemove = [];
-
     for (let i = 0; i < this.balls.length; i++) {
       const ball = this.balls[i];
-      if (!isPlayer(ball) && ball.ballType === player.ballType) {
-        indexesToRemove.push(i);
-      }
+      if (!isPlayer(ball) && ball.ballType === player.ballType)
+      indexesToRemove.push(i);
     }
+    this.removeBall(indexesToRemove, true);
 
+    indexesToRemove.length = 0;
+    const seenTypes = new Set();
+    for (let i = 0; i < this.balls.length; i++) {
+      const ball = this.balls[i];
+      if (isPlayer(ball)) continue;
+
+      if (seenTypes.has(ball.ballType)) indexesToRemove.push(i);else
+      seenTypes.add(ball.ballType);
+    }
     this.removeBall(indexesToRemove, true);
   }
 
@@ -537,7 +553,7 @@ class MultiBallManager extends Manager
 
   updateBalls() {
     this.removeDestroyedBalls();
-    this.removeBallsWithSameTypeAsPlayer();
+    if (!this.allowSameBallType) this.removeBallsWithSameType();
   }
 
   onEvents(_ref)

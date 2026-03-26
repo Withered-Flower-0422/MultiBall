@@ -53,6 +53,10 @@ declare class MultiBallManager extends Manager<{
      */
     init(switchKeys: SwitchBallKeys, cameraEase: bool, easeDistance: float, sfxAppendEnd: AudioPlayer, sfxSwitch: AudioPlayer): void;
     /**
+     * Whether balls of the same type are allowed to exist simultaneously.
+     */
+    allowSameBallType: bool;
+    /**
      * The list of balls of the multi ball system.
      */
     balls: (MultiBall | Player)[];
@@ -71,7 +75,7 @@ declare class MultiBallManager extends Manager<{
     /**
      * The next ball instance.
      */
-    get nextBall(): Player | MultiBall;
+    get nextBall(): MultiBall | Player;
     /**
      * The previous ball's index.
      */
@@ -79,7 +83,7 @@ declare class MultiBallManager extends Manager<{
     /**
      * The previous ball instance.
      */
-    get previousBall(): Player | MultiBall;
+    get previousBall(): MultiBall | Player;
     private playerAvatar;
     private updateKeyTipUI;
     private updateAvatarUI;
@@ -123,7 +127,7 @@ declare class MultiBallManager extends Manager<{
      * @param vfx - Whether to destroy the ball with visual effects or not. Defaults to `true`.
      */
     removeBall(indexes: int[], vfx?: boolean): void;
-    private removeBallsWithSameTypeAsPlayer;
+    private removeBallsWithSameType;
     private removeDestroyedBalls;
     /**
      * Gets the closest platform's trans to the given position.
@@ -133,7 +137,7 @@ declare class MultiBallManager extends Manager<{
     private getClosetPlatformTrans;
     private updateUI;
     private updateBalls;
-    protected onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }: E): void;
+    protected onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached }: E): void;
 }
 export declare const multiBallManager: MultiBallManager;
 export default multiBallManager;

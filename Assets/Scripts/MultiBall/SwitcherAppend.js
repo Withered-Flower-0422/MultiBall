@@ -15,6 +15,7 @@ export const onTrigger = (self, triggeredItem, type) => {
   !multiBallManager.enabled ||
   !levelManager.timerEnabled ||
   triggeredItem.guid !== player.guid ||
+  !multiBallManager.allowSameBallType &&
   player.ballType === switchBallType)
 
   return;

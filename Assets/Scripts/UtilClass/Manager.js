@@ -142,13 +142,13 @@ export default class Manager
 
   update(e) {
     if (!this.#enabled) return;
+
     this.onEvents(e);
-    if (e.OnStartLevel)
-    Object.values(this.keys).forEach((key) =>
-    key.updateConflictKey()
-    );
-    if (e.OnPhysicsUpdate)
-    Object.values(this.keys).forEach((key) => key.update());
+
+    const keys = Object.values(this.keys);
+    if (e.OnStartLevel) keys.forEach((key) => key.updateConflictKey());
+    if (e.OnPhysicsUpdate) keys.forEach((key) => key.update());
+
     this.canceledEvents.clear();
   }
 }
