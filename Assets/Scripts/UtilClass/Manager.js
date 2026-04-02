@@ -90,7 +90,7 @@ export default class Manager
 
   get keys() {
     if (!this.#keys)
-    throw new ReferenceError("Custom keys are not initialized.");
+    throw new ReferenceError("Custom keys are not initialized");
 
     return this.#keys;
   }
