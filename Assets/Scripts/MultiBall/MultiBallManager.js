@@ -491,20 +491,16 @@ class MultiBallManager extends Manager
 
   removeBallsWithSameType() {
     const indexesToRemove = [];
-    for (let i = 0; i < this.balls.length; i++) {
-      const ball = this.balls[i];
-      if (!isPlayer(ball) && ball.ballType === player.ballType)
-      indexesToRemove.push(i);
-    }
-    this.removeBall(indexesToRemove, true);
-
-    indexesToRemove.length = 0;
     const seenTypes = new Set();
     for (let i = 0; i < this.balls.length; i++) {
       const ball = this.balls[i];
       if (isPlayer(ball)) continue;
 
-      if (seenTypes.has(ball.ballType)) indexesToRemove.push(i);else
+      if (
+      ball.ballType === player.ballType ||
+      seenTypes.has(ball.ballType))
+
+      indexesToRemove.push(i);else
       seenTypes.add(ball.ballType);
     }
     this.removeBall(indexesToRemove, true);
