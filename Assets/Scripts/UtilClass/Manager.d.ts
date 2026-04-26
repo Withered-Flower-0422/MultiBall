@@ -6,6 +6,7 @@ import type { AssertNonNegInt } from "utils";
 export type ManagerEvents<M extends Manager<any, any, any>> = M extends Manager<infer E, any, any> ? E : never;
 export type OnCustomEvents<M extends Manager<any, any, any>> = (self: Item, events: ManagerEvents<M>) => void;
 export type E = BuiltinEvents & {
+    /** A manager should never receive custom events. */
     OnReceiveCustomEvent?: never;
 };
 export default abstract class Manager<Events extends object & {
@@ -48,7 +49,7 @@ export default abstract class Manager<Events extends object & {
     protected abstract onEvents(e: E): void;
     /**
      * Updates the manager.
-     * @param e The event data.
+     * @param e The builtin events.
      */
     update(e: E): void;
 }

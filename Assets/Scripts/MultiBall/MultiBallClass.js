@@ -25,14 +25,6 @@ export class MultiBall {
 
 
 
-
-
-
-
-
-
-
-
   constructor(
   ballType,
   templateName,

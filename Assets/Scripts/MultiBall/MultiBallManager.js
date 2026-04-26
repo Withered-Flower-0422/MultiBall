@@ -512,9 +512,8 @@ class MultiBallManager extends Manager
     for (let i = 0; i < this.balls.length; i++) {
       const ball = this.balls[i];
       if (isPlayer(ball)) continue;
-      if (ball.instance.getComponent("PhysicsObject").isDestroyed()) {
-        indexesToRemove.push(i);
-      }
+      if (ball.instance.getComponent("PhysicsObject").isDestroyed())
+      indexesToRemove.push(i);
     }
 
     this.removeBall(indexesToRemove, false);

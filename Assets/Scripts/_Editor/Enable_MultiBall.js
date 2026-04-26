@@ -64,7 +64,7 @@ const addMultiBallItemToScene = () => {
 };
 
 export const menuPath =
-editor.language === "Chinese" ? "启用多球" : "Enable MultiBall";
+editor.language === "Chinese" ? "启用/启用多球" : "Enable/Enable MultiBall";
 
 export const execute = () => {
   if (!addBallAvatarTexAssets()) {

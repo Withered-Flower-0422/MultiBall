@@ -22,14 +22,14 @@ mathEx;(function (_mathEx) {
 
 
 
-  const degToRad = _mathEx.degToRad = (degrees) => degrees * mathEx.DEG_TO_RAD;
+  const degToRad = _mathEx.degToRad = (degrees) => degrees * DEG_TO_RAD;
 
 
 
 
 
 
-  const radToDeg = _mathEx.radToDeg = (radians) => radians * mathEx.RAD_TO_DEG;
+  const radToDeg = _mathEx.radToDeg = (radians) => radians * RAD_TO_DEG;
 
 
 
@@ -46,7 +46,7 @@ mathEx;(function (_mathEx) {
 
 
   const normalizeRad = _mathEx.normalizeRad = (radians) =>
-  (radians % mathEx.TWO_PI + mathEx.TWO_PI) % mathEx.TWO_PI;
+  (radians % TWO_PI + TWO_PI) % TWO_PI;
 
 
 
@@ -56,7 +56,7 @@ mathEx;(function (_mathEx) {
 
 
   const shortestAngleDiffDeg = _mathEx.shortestAngleDiffDeg = (a, b) => {
-    const diff = mathEx.normalizeDeg(b - a);
+    const diff = normalizeDeg(b - a);
     return diff > 180 ? diff - 360 : diff;
   };
 
@@ -68,8 +68,8 @@ mathEx;(function (_mathEx) {
 
 
   const shortestAngleDiffRad = _mathEx.shortestAngleDiffRad = (a, b) => {
-    const diff = mathEx.normalizeRad(b - a);
-    return diff > mathEx.PI ? diff - mathEx.TWO_PI : diff;
+    const diff = normalizeRad(b - a);
+    return diff > PI ? diff - TWO_PI : diff;
   };
 
 
@@ -93,7 +93,7 @@ mathEx;(function (_mathEx) {
 
 
   const normalizeFloat2 = _mathEx.normalizeFloat2 = (value) => {
-    const len = mathEx.lengthFloat2(value);
+    const len = lengthFloat2(value);
     return new Float2(value.x / len, value.y / len);
   };
 
@@ -245,12 +245,8 @@ mathEx;(function (_mathEx) {
 
 
   const transFloat3WithQuat = _mathEx.transFloat3WithQuat = (v, q) =>
-  mathEx.quaternionToAxisAngle(
-    mathEx.mulQuaternion(
-      q,
-      mathEx.float3ToPureQuaternion(v),
-      mathEx.invertQuaternion(q)
-    )
+  quaternionToAxisAngle(
+    mulQuaternion(q, float3ToPureQuaternion(v), invertQuaternion(q))
   ).axis;
 
 
@@ -263,7 +259,7 @@ mathEx;(function (_mathEx) {
   const slerpQuaternion = _mathEx.slerpQuaternion = (a, b, t) => {
     let { x: ax, y: ay, z: az, w: aw } = a;
     let { x: bx, y: by, z: bz, w: bw } = b;
-    t = mathEx.clamp(t, 0, 1);
+    t = clamp(t, 0, 1);
 
     let cosTheta = ax * bx + ay * by + az * bz + aw * bw;
 
@@ -335,8 +331,8 @@ mathEx;(function (_mathEx) {
   {let b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Quaternion(0, 0, 0, 1);let kp = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 8;
     let { x, y, z, w } = b;
     if (x === 0 && y === 0 && z === 0 && w === 1)
-    return mathEx.getAngularVelocityToUnit(a, kp);
-    ({ x, y, z, w } = mathEx.mulQuaternion(mathEx.invertQuaternion(a), b));
+    return getAngularVelocityToUnit(a, kp);
+    ({ x, y, z, w } = mulQuaternion(invertQuaternion(a), b));
 
     const sinHalfAngle = Math.sqrt(1 - w * w);
     if (sinHalfAngle < 1e-9) return new Float3(0, 0, 0);
@@ -390,11 +386,11 @@ mathEx;(function (_mathEx) {
   axis,
   angle) =>
 
-  mathEx.addFloat3(
+  addFloat3(
     pivot,
-    mathEx.transFloat3WithQuat(
-      mathEx.subFloat3(currentPos, pivot),
-      mathEx.axisAngleToQuaternion(axis, angle)
+    transFloat3WithQuat(
+      subFloat3(currentPos, pivot),
+      axisAngleToQuaternion(axis, angle)
     )
   );
 
@@ -409,11 +405,7 @@ mathEx;(function (_mathEx) {
   currentQuat,
   axis,
   angle) =>
-
-  mathEx.mulQuaternion(
-    mathEx.axisAngleToQuaternion(axis, angle),
-    currentQuat
-  );
+  mulQuaternion(axisAngleToQuaternion(axis, angle), currentQuat);
 
 
 
@@ -459,14 +451,11 @@ mathEx;(function (_mathEx) {
   linearKp,
   angularKp) => (
   {
-    linear: mathEx.scaleFloat3(forceVec, linearKp / mass),
-    angular: mathEx.scaleFloat3(
-      mathEx.transFloat3WithQuat(
-        math.crossProductFloat3(
-          mathEx.subFloat3(forcePos, itemPos),
-          forceVec
-        ),
-        mathEx.invertQuaternion(itemQuat)
+    linear: scaleFloat3(forceVec, linearKp / mass),
+    angular: scaleFloat3(
+      transFloat3WithQuat(
+        math.crossProductFloat3(subFloat3(forcePos, itemPos), forceVec),
+        invertQuaternion(itemQuat)
       ),
       angularKp / mass
     )
@@ -496,7 +485,7 @@ mathEx;(function (_mathEx) {
   linearKp,
   angularKp) =>
   {
-    const { linear, angular } = mathEx.getAccelerationByForceAtPoint(
+    const { linear, angular } = getAccelerationByForceAtPoint(
       itemPos,
       itemQuat,
       forcePos,
@@ -506,8 +495,8 @@ mathEx;(function (_mathEx) {
       angularKp
     );
     return {
-      linear: mathEx.addFloat3(originalLinearVel, linear),
-      angular: mathEx.addFloat3(originalAngularVel, angular)
+      linear: addFloat3(originalLinearVel, linear),
+      angular: addFloat3(originalAngularVel, angular)
     };
   };})(mathEx || (mathEx = {}));
 

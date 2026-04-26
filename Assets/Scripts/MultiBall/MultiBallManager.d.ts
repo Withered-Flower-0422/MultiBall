@@ -2,7 +2,7 @@ import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import Manager, { type E } from "Scripts/UtilClass/Manager.js";
 import type { Player, BallType, AudioPlayer } from "game:alias";
-import type { Trans, SwitchBallKeys, AppendData, SwitchData } from "Scripts/MultiBall/MultiBallType.js";
+import type { Trans, AppendData, SwitchData, SwitchBallKeys } from "Scripts/MultiBall/MultiBallType.js";
 declare class MultiBallManager extends Manager<{
     OnPreMultiBallAppendStart?: AppendData;
     OnPreMultiBallAppendEnd?: AppendData;
