@@ -6,16 +6,16 @@ import { defaultStatus } from "Scripts/MultiBall/Utils.js";
 
 export class MultiBall {
 
+  instance;
 
 
+  avatar;
 
 
+  ballType;
 
 
-
-
-
-
+  status;
 
 
 

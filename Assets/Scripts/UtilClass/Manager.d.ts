@@ -47,9 +47,4 @@ export default abstract class Manager<Events extends object & {
      */
     abstract init(...args: any[]): void;
     protected abstract onEvents(e: E): void;
-    /**
-     * Updates the manager.
-     * @param e The builtin events.
-     */
-    update(e: E): void;
 }

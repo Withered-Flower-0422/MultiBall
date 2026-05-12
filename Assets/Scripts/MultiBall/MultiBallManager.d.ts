@@ -137,7 +137,7 @@ declare class MultiBallManager extends Manager<{
     private getClosetPlatformTrans;
     private updateUI;
     private updateBalls;
-    protected onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached }: E): void;
+    protected onEvents({ OnStartLevel, OnTimerActive, OnPhysicsUpdate, OnPlayerDeadEnd, OnPostSwitchBallEnd, OnPreSwitchBallStart, OnPostTransferBallEnd, OnPreTransferBallStart, OnPostCheckpointReached, OnPostDestinationReached, }: E): void;
 }
 export declare const multiBallManager: MultiBallManager;
 export default multiBallManager;

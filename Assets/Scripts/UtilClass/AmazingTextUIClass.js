@@ -8,9 +8,9 @@ import {
 "gameApi";
 
 export default class AmazingTextUI {
-
-
-
+  color;
+  animeDuration;
+  allowMouseRightToggle;
   duringConfig = false;
 
   text = null;

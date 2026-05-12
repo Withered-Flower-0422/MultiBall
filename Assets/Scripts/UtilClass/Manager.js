@@ -143,6 +143,7 @@ export default class Manager
 
 
 
+
   update(e) {
     if (!this.#enabled) return;
 

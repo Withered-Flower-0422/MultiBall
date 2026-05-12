@@ -161,8 +161,8 @@ inputManager.mouse.checkButtonDown(key) :
 inputManager.keyboard.checkKeyDown(key);
 
 export default class CustomKey {
-
-
+  keyName;
+  keys;
   get key() {
     return this.keys[levelManager.cameraMode === 0 ? 0 : 1];
   }
@@ -172,7 +172,7 @@ export default class CustomKey {
   get duringConfig() {
     return this.ui.duringConfig;
   }
-
+  ui;
   get uiText() {
     const keyName = this.keyName[settings.language];
     return `${keyName}${keyName === "" ? "" : ": "}${this.ui.duringConfig ? "[ . . . ]" : `${this.isMouseButton() ? "MOUSE" : ""} ${this.key.toUpperCase()}`}`;
