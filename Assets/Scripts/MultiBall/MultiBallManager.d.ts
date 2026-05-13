@@ -92,7 +92,7 @@ declare class MultiBallManager extends Manager<{
      * @param status The status of the ball.
      * @param index The index to add the ball at. Defaults to `undefined` to add it at the end.
      */
-    addBall(ballType: BallType, templateName: string, trans: [pos: Float3, rot: Float3, scl: Float3], velocity: [linear: Float3, angular: Float3], status?: import("Scripts/MultiBall/Utils.js").Status, index?: int): void;
+    addBall(ballType: BallType, templateName: string, trans: [pos: Float3, rot: Float3, scl: Float3], velocity: [linear: Float3, angular: Float3], status?: import("Scripts/MultiBall/MultiBallType.js").Status, index?: int): void;
     /**
      * Appends a new ball at the end of the ball list, and switches to it.
      * @param ballType The type of the ball to append.

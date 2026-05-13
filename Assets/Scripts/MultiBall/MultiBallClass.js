@@ -4,6 +4,7 @@ import Avatar from "Scripts/MultiBall/AvatarClass.js";
 import { defaultStatus } from "Scripts/MultiBall/Utils.js";
 
 
+
 export class MultiBall {
 
   instance;

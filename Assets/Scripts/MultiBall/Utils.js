@@ -4,13 +4,6 @@ import { player, variables } from "gameApi";
 
 
 
-
-
-
-
-
-
-
 export const defaultStatus = {
   durability: 100,
   temperature: 20,

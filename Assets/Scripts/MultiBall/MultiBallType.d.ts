@@ -1,6 +1,14 @@
 import { Float3 } from "gameApi"
 import { BallType, KeyboardKey, MouseButton } from "game:alias"
 
+export interface Status {
+    durability: float
+    temperature: float
+    wetness: float
+    power: float
+    scale: float
+}
+
 export type Key = KeyboardKey | MouseButton
 export type SwitchBallKeys = [Key, Key]
 
