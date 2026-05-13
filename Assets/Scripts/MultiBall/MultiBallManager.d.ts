@@ -2,7 +2,7 @@ import { Float3 } from "gameApi";
 import MultiBall from "Scripts/MultiBall/MultiBallClass.js";
 import Manager, { type E } from "Scripts/UtilClass/Manager.js";
 import type { Player, BallType, AudioPlayer } from "game:alias";
-import type { Trans, AppendData, SwitchData, SwitchBallKeys } from "Scripts/MultiBall/MultiBallType.js";
+import type { Trans, AppendData, SwitchData } from "Scripts/MultiBall/MultiBallType.js";
 declare class MultiBallManager extends Manager<{
     OnPreMultiBallAppendStart?: AppendData;
     OnPreMultiBallAppendEnd?: AppendData;
@@ -43,15 +43,6 @@ declare class MultiBallManager extends Manager<{
     private readonly locks;
     private readonly skinSuffix;
     private sfx;
-    /**
-     * Initializes the multi ball manager.
-     * @param switchKeys The keys to switch balls.
-     * @param cameraEase Whether to use the camera ease when switching or appending.
-     * @param easeDistance Affects the camera ease.
-     * @param sfxAppendEnd The sound effect to play when appending balls is done.
-     * @param sfxSwitch The sound effect to play when switching balls.
-     */
-    init(switchKeys: SwitchBallKeys, cameraEase: bool, easeDistance: float, sfxAppendEnd: AudioPlayer, sfxSwitch: AudioPlayer): void;
     /**
      * Whether balls of the same type are allowed to exist simultaneously.
      */

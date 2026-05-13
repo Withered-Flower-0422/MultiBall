@@ -41,10 +41,5 @@ export default abstract class Manager<Events extends object & {
     protected abstract disable(): void;
     get enabled(): bool;
     set enabled(value: bool);
-    /**
-     * Initializes the manager.
-     * @param args The arguments to initialize the manager.
-     */
-    abstract init(...args: any[]): void;
     protected abstract onEvents(e: E): void;
 }
