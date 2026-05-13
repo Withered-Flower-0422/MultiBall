@@ -11,6 +11,7 @@ import { player, variables } from "gameApi";
 
 
 
+
 export const defaultStatus = {
   durability: 100,
   temperature: 20,
@@ -19,8 +20,10 @@ export const defaultStatus = {
   scale: 1
 };
 
+
 export const isPlayer = (obj) =>
 "guid" in obj;
+
 
 export const getStatusFromPlayer = () => ({
   durability: player.durability,
@@ -29,6 +32,7 @@ export const getStatusFromPlayer = () => ({
   power: player.power,
   scale: player.scale
 });
+
 
 export const createSingleton = function (
 
