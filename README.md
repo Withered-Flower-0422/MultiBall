@@ -13,7 +13,7 @@ MultiBall patch for Ballex².
 ## Usage
 
 1. Put the whole `Assets` folder in `%USERPROFILE%\AppData\LocalLow\Mushreb\BME Pro HDRP`.
-2. Click `Scripts → Enable → Enable MultiBall` in the menu bar to enable the Laser system for the current scene.
+2. Click `Scripts → Enable → Enable MultiBall` in the menu bar to enable the MultiBall system for the current scene.
 3. If you want MultiBall tips, drag the `MultiBallTip` item into the scene. The tip will show up after first ball appending in the game.
 4. Then you can use the MultiBall related items in BME Pro HDRP like official items.
 
