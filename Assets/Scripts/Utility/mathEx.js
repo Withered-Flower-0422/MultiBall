@@ -198,7 +198,7 @@ mathEx;(function (_mathEx) {
 
 
   const mulQuaternion = _mathEx.mulQuaternion = function (q) {for (var _len5 = arguments.length, qs = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {qs[_key5 - 1] = arguments[_key5];}return (
-      qs.reduce((acc, q) => _mulQuaternion(acc, q), q));};
+      qs.reduce(_mulQuaternion, q));};
 
 
 
